@@ -53,13 +53,15 @@ p { margin: 0; }
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
-.brand { display: flex; align-items: flex-end; gap: 6px; text-decoration: none; }
+.brand { display: flex; flex-shrink: 0; align-items: flex-end; gap: 6px; text-decoration: none; }
 .brand .signature { width: 92px; filter: invert(1); }
 .brand span { font-size: 15px; color: var(--muted); line-height: 1; padding-bottom: 4px; }
 .top-actions { display: flex; align-items: center; gap: 8px; }
 
 .lang {
   display: flex;
+  flex-shrink: 0;
+  margin-left: auto;
   padding: 3px;
   border-radius: 999px;
   background: rgba(0, 0, 0, 0.35);
@@ -74,6 +76,7 @@ p { margin: 0; }
   border-radius: 999px;
   padding: 5px 10px;
   cursor: pointer;
+  white-space: nowrap;
 }
 .lang button[aria-pressed="true"] { background: #fff; color: #000; }
 
@@ -308,10 +311,14 @@ main { max-width: 1120px; margin: 0 auto; padding: 0 var(--gutter); }
 
 /* Phone */
 @media (max-width: 520px) {
+  .top { flex-wrap: wrap; gap: 12px; }
+  .top-actions { width: 100%; }
+  .top-actions .pill { flex: 1; justify-content: center; height: 44px; }
+  .lang { padding: 0; }
+  .lang button { min-width: 44px; min-height: 44px; }
   .venues { grid-template-columns: 1fr; }
   .venue { height: 220px; }
   .venue img { right: -6%; height: 100%; bottom: -26%; }
-  .brand .signature { width: 76px; }
   .terminal pre { font-size: 13px; padding: 20px; padding-top: 48px; }
 }
 
