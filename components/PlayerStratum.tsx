@@ -58,9 +58,17 @@ const markSwipeHintSeen = () => {
   }
 };
 
-// The outline a card leaves behind: its shape and glyphs, barely there.
-const GhostCard: React.FC<{ card: Card }> = ({ card }) => (
-  <div className="w-[10em] h-[14em] text-[10cqw] rounded-[1.8em] border border-white/15 bg-black flex flex-col justify-between px-[1.3em] pt-[1em] pb-[1.3em] text-white/15">
+// The front card covers 43.75% of the back one; the back one stops a corner radius (18%)
+// short of that, so its outline runs into the front card's rounded corner.
+const BEHIND = "inset(0 25.75% 0 0)";
+
+// What a card leaves behind: an outline and its glyphs, barely there, like the seat tile
+// beside it once you are out. Transparent, so the back card is cut where the front one sits.
+const GhostCard: React.FC<{ card: Card; behind?: boolean }> = ({ card, behind }) => (
+  <div
+    className="w-[10em] h-[14em] text-[10cqw] rounded-[1.8em] border border-white/15 flex flex-col justify-between px-[1.3em] pt-[1em] pb-[1.3em] text-white/15"
+    style={behind ? { clipPath: BEHIND } : undefined}
+  >
     <span className="text-[4.4em] leading-none tracking-tight">{card.rank}</span>
     <span className="text-[3.4em] leading-none">{card.suit}</span>
   </div>
@@ -122,8 +130,8 @@ export const PlayerStratum: React.FC<PlayerStratumProps> = ({
 
   // Swipe the cards up to fold
   // Where the finger went down lives in a ref, so a fast flick never reads a stale start
-  const dragStart = useRef<{ x: number; y: number; dx: number; dy: number } | null>(null);
-  const [drag, setDrag] = useState<{ dx: number; dy: number } | null>(null);
+  const dragStart = useRef<{ y: number; dy: number } | null>(null);
+  const [drag, setDrag] = useState<{ dy: number } | null>(null);
   const [flung, setFlung] = useState(false);
 
   // --- Standard No-Limit raise sizing ---
@@ -179,17 +187,15 @@ export const PlayerStratum: React.FC<PlayerStratumProps> = ({
     } catch {
       // a pointer that cannot be captured still drags while it stays over them
     }
-    dragStart.current = { x: e.clientX, y: e.clientY, dx: 0, dy: 0 };
-    setDrag({ dx: 0, dy: 0 });
+    dragStart.current = { y: e.clientY, dy: 0 };
+    setDrag({ dy: 0 });
   };
   const onPointerMove = (e: React.PointerEvent) => {
     const start = dragStart.current;
     if (!start) return;
-    const dy = e.clientY - start.y;
-    // Free upward, stiff downward: the gesture only goes one way
-    start.dx = (e.clientX - start.x) * 0.4;
-    start.dy = dy < 0 ? dy : dy * 0.15;
-    setDrag({ dx: start.dx, dy: start.dy });
+    // Straight up only: sideways and downward movement are ignored
+    start.dy = Math.min(0, e.clientY - start.y);
+    setDrag({ dy: start.dy });
   };
   const onPointerUp = () => {
     const start = dragStart.current;
@@ -352,7 +358,7 @@ export const PlayerStratum: React.FC<PlayerStratumProps> = ({
                 key={`ghost-${card.id}`}
                 className={`absolute top-0 w-[64%] [container-type:inline-size] ${idx === 0 ? "left-0" : "right-0"}`}
               >
-                <GhostCard card={card} />
+                <GhostCard card={card} behind={idx === 0} />
               </div>
             ))}
 
@@ -360,7 +366,7 @@ export const PlayerStratum: React.FC<PlayerStratumProps> = ({
             <div
               className="absolute inset-0 z-10"
               style={{
-                transform: `translate(${drag?.dx ?? 0}px, ${(drag?.dy ?? 0) - (flung ? 180 : 0)}px) rotate(${(drag?.dx ?? 0) * 0.04}deg)`,
+                transform: `translateY(${(drag?.dy ?? 0) - (flung ? 180 : 0)}px)`,
                 opacity: flung ? 0 : 1 - lift * 0.45,
                 transition: drag && !flung ? "none" : "transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.22s ease-out",
               }}
