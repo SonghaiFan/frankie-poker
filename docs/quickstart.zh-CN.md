@@ -1,6 +1,6 @@
-# 和大模型打德扑，从修改策略开始
+# Frankie Poker 中文上手指南
 
-Frankie Hold'em 是一个开源的德州扑克实验场：选对手模型、改提示词、预览模型能看到的信息，再到牌桌上试验。筹码是虚拟的，模型请求会消耗你自己的 OpenRouter 余额。
+Frankie Poker 是一个开源的德州扑克实验场：选对手模型、改提示词、预览模型能看到的信息，再到牌桌上试验。筹码是虚拟的，模型请求会消耗你自己的 OpenRouter 余额。
 
 ## 本地启动
 
@@ -41,10 +41,10 @@ cp .env.example .env.local
 
 打开项目，把下面这段交给 agent：
 
-> 阅读 AGENTS.md 和 docs/agent-guide.md，帮我在本地配置 Frankie Hold'em。不要读取或输出我的 API key，告诉我在哪里手动填写。为一个对手写一份谨慎价值型策略，保存为 Markdown，保留模型的输出协议，并引导我在 UI 中应用和预览四个轮次。执行相关检查，说明哪些验证已完成。调用付费模型前先获得我的授权。
+> 阅读 AGENTS.md 和 docs/agent-guide.md，帮我在本地配置 Frankie Poker。不要读取或输出我的 API key，告诉我在哪里手动填写。为一个对手写一份谨慎价值型策略，保存为 Markdown，保留模型的输出协议，并引导我在 UI 中应用和预览四个轮次。执行相关检查，说明哪些验证已完成。调用付费模型前先获得我的授权。
 
 可以从 [示例策略](strategies/cautious-value.md) 开始。添加变量前，让 agent 阅读 [插件贡献规范](../plugins/AGENTS.md)。预览不是效果评估；真正的模型行为需要实际牌局验证，少量胜负不能证明策略优劣。
 
 ## 致谢
 
-向 [Offsuit](https://offsuit.app/) 致敬：它现代、极简的扑克 UI/UX 是本项目的重要设计参考。Frankie Hold'em 是独立项目，与 Offsuit 无隶属或背书关系。
+向 [Offsuit](https://offsuit.app/) 致敬：它现代、极简的扑克 UI/UX 是本项目的重要设计参考。Frankie Poker 是独立项目，与 Offsuit 无隶属或背书关系。

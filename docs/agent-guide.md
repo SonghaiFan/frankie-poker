@@ -1,6 +1,6 @@
-# Agent guide: configure, write a strategy, test it
+# Frankie Poker agent guide: configure, write a strategy, test it
 
-This repository is a local-first poker playground. An agent helps the human configure it and experiment; it must not promise a profitable or optimal poker strategy.
+Frankie Poker is a local-first poker playground. An agent helps the human configure it and experiment; it must not promise a profitable or optimal poker strategy.
 
 ## 1. Establish the environment
 

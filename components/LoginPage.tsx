@@ -56,11 +56,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, isExiting, onOpen
         </div>
 
         <div className="flex-1 flex flex-col justify-center px-5">
-          {/* The name of the game: the handwritten Frankie signature, Hold'em set beneath it */}
+          {/* The name of the game: the handwritten Frankie signature, Poker set beneath it */}
           <h1 aria-label={t.login.title} className="text-white">
             <FrankSignature title="Frankie" className="w-[260px] h-auto -ml-1" />
             <span aria-hidden className="block mt-3 text-[40px] font-extralight leading-none tracking-tight">
-              Hold'em
+              Poker
             </span>
           </h1>
         </div>

@@ -1,4 +1,4 @@
-# Frankie Hold'em
+# Frankie Poker
 
 **Play poker with language models. Give them a strategy. See how they play.**
 
@@ -92,7 +92,7 @@ Turn off **Let the model decide** to adjust the style map or choose a preset. Th
 
 Paste this into your coding agent after opening the repository:
 
-> Read AGENTS.md and docs/agent-guide.md. Set up Frankie Hold'em locally. Help me configure OpenRouter without reading or printing my API key. Write a cautious value-oriented opponent strategy as a Markdown file, preserve the model's response contract, and show me how to paste it into the UI and preview all four streets. Run the relevant checks and explain what is and isn't verified. Do not make paid model calls without my approval.
+> Read AGENTS.md and docs/agent-guide.md. Set up Frankie Poker locally. Help me configure OpenRouter without reading or printing my API key. Write a cautious value-oriented opponent strategy as a Markdown file, preserve the model's response contract, and show me how to paste it into the UI and preview all four streets. Run the relevant checks and explain what is and isn't verified. Do not make paid model calls without my approval.
 
 Your agent can help with setup, strategy drafts, variable plugins, and code changes. The [agent guide](docs/agent-guide.md) provides a concrete workflow and acceptance checks.
 
@@ -112,9 +112,13 @@ npm run build
 
 ## Credits
 
-A big shout-out to **[Offsuit](https://offsuit.app/)**: its modern, minimal poker UI/UX inspired this project's visual direction and interaction design. Frankie Hold'em is an independent project and is not affiliated with or endorsed by Offsuit.
+A big shout-out to **[Offsuit](https://offsuit.app/)**: its modern, minimal poker UI/UX inspired this project's visual direction and interaction design. Frankie Poker is an independent project and is not affiliated with or endorsed by Offsuit.
 
 AI brand icons come from [LobeHub Icons](https://github.com/lobehub/lobe-icons). The JEV/Typesafe mark was supplied from [Seeklogo](https://seeklogo.com/); brand marks remain the property of their owners. Avatar fallbacks use [Microsoft Fluent Emoji](https://github.com/microsoft/fluentui-emoji). Venue illustrations were generated for this project with a Fluent 3D-inspired material direction. See [third-party notices](THIRD_PARTY_NOTICES.md).
+
+## Browser data compatibility
+
+Existing saves keep their historical `franks-holdem:` storage keys so renaming the app does not reset bankrolls, opponents, or language preferences.
 
 ## License
 

@@ -241,13 +241,13 @@ export interface Translations {
 export const translations: Record<Language, Translations> = {
   en: {
     langName: "English",
-    gameTitle: "Frankie Hold'em",
-    gameSubtitle: "Frank's Hold'em",
+    gameTitle: "Frankie Poker",
+    gameSubtitle: "Frankie Poker",
     madeBy: "Made by 范不着Frank",
     sysVersion: "Sys v1.0.0",
 
     login: {
-      title: "Frankie Hold'em",
+      title: "Frankie Poker",
       namePlaceholder: "Your name",
       play: "Play",
     },
@@ -500,13 +500,13 @@ export const translations: Record<Language, Translations> = {
 
   zh: {
     langName: "中文",
-    gameTitle: "Frankie Hold'em",
-    gameSubtitle: "弗兰克德州扑克",
+    gameTitle: "Frankie Poker",
+    gameSubtitle: "Frankie Poker",
     madeBy: "由 范不着Frank 制作",
     sysVersion: "系统版本 v1.0.0",
 
     login: {
-      title: "Frankie Hold'em",
+      title: "Frankie Poker",
       namePlaceholder: "你的名字",
       play: "开始",
     },

@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, ChevronDown } from "lucide-react";
 
-/* Assignees — from Bencho (bencho.dev, MIT). Lifted into Frank's
-   Hold'em as the "who is at the table" control: each face is an
+/* Assignees — from Bencho (bencho.dev, MIT). Lifted into Frankie
+   Poker as the "who is at the table" control: each face is an
    AI opponent, and the brain behind it is one of the OpenRouter
    models in AI_MODELS. Comments below are Bencho's and explain
    why the numbers are what they are; the notes marked FRANK say
