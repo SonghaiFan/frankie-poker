@@ -224,7 +224,7 @@ export const AI_MODELS: AIModelOption[] = [
 ];
 
 // What a model costs to run, per million tokens in and out together.
-export const modelCostPerM = (m: AIModelOption) => m.pricePerM.input + m.pricePerM.output;
+export const modelCostPerM = (m: AIModelOption) => m.pricePerM ? m.pricePerM.input + m.pricePerM.output : Infinity;
 
 export const DEFAULT_CONFIG: GameConfig = {
   playerName: "Player",

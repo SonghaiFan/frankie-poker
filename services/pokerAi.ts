@@ -9,6 +9,8 @@ import {
   buildSituation,
 } from "./pokerSituation";
 import { preflopDecision } from "./preflop";
+import { getAIConnection } from "./aiConnection";
+import { LOCAL_MODEL, localDecision } from './localPractice';
 
 // The decision pipeline for an AI opponent:
 //   preflop, with a styled seat → the hand chart (services/preflop.ts) decides; stop
@@ -17,7 +19,6 @@ import { preflopDecision } from "./preflop";
 //   persona layer   → warp the distribution, sample, map to chips, write a log line
 // Our code owns the workflow; the model is asked only for judgement.
 
-const API_KEY = process.env.OPENROUTER_API_KEY;
 const WEAK_HAND_THRESHOLD = 1.5; // hand_strength at or below this counts as a bluffing hand
 
 interface AIDecision {
@@ -191,6 +192,10 @@ export const getAIDecision = async (
   reasoningHistory: string[] = [],
   modelId: string = AI_MODELS[0].id
 ): Promise<AIDecision> => {
+  // Before credentials, variable simulations, or remote provider routing.
+  if ((activePlayer.model ?? modelId) === LOCAL_MODEL) {
+    return localDecision(activePlayer, board, phase, pot, currentHighBet, bigBlind);
+  }
   const persona = activePlayer.persona ?? RAW_PERSONA;
   const tilt = activePlayer.tilt ?? 1;
 
@@ -214,11 +219,14 @@ export const getAIDecision = async (
   }
 
   try {
-    if (!API_KEY) throw new Error("OPENROUTER_API_KEY is not set");
-    const trace = await runModel(situation, activePlayer.model ?? modelId, API_KEY, activePlayer.prompt);
+    const connection = getAIConnection();
+    if (!connection.apiKey) throw new Error("API key is not set");
+    const trace = await runModel(situation, activePlayer.model ?? modelId, connection.apiKey, activePlayer.prompt,
+      connection.provider === 'compatible' ? connection.baseUrl : undefined);
     return decideWithPersona(situation, trace.judgement, persona, tilt);
   } catch (error) {
-    console.error("AI Error:", error);
+    // Provider responses may contain sensitive request details; never log them.
+    console.error("AI request failed; using the safe default action.");
     return { action: situation.safeDefault, reasoning: "Error in AI service." };
   }
 };

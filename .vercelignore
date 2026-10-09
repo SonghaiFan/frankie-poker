@@ -1,0 +1,7 @@
+.env
+.env.*
+.tournament
+dist
+node_modules
+docs/images
+*.log

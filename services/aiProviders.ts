@@ -75,21 +75,21 @@ export const chatInput = (situation: Situation) => ({
   state: situation.state,
 });
 
-const headers = (apiKey: string) => ({
+const headers = (apiKey: string, url: string) => ({
   Authorization: `Bearer ${apiKey}`,
   "Content-Type": "application/json",
-  "X-Title": APP_TITLE,
+  ...(new URL(url).origin === 'https://openrouter.ai' ? { "X-Title": APP_TITLE } : {}),
 });
 
 const postJson = async (url: string, apiKey: string, body: unknown) => {
   const response = await fetch(url, {
     method: "POST",
-    headers: headers(apiKey),
+    headers: headers(apiKey, url),
     body: JSON.stringify(body),
+    signal: AbortSignal.timeout(60000),
   });
   if (!response.ok) {
-    const text = await response.text().catch(() => "");
-    throw new Error(`${url} ${response.status}: ${text}`);
+    throw new Error(`AI provider returned HTTP ${response.status}`);
   }
   return response.json();
 };
@@ -235,11 +235,14 @@ const runChat = async (
   situation: Situation,
   modelId: string,
   apiKey: string,
-  prompt?: string
+  prompt?: string,
+  baseUrl?: string
 ): Promise<ModelTrace> => {
   const request = buildChatRequest(situation, modelId, prompt);
+  // OpenRouter's reasoning extension is not part of the compatible contract.
+  if (baseUrl && 'reasoning' in request) delete request.reasoning;
   const started = performance.now();
-  const response = (await postJson(CHAT_URL, apiKey, request)) as {
+  const response = (await postJson(baseUrl ? `${baseUrl}/chat/completions` : CHAT_URL, apiKey, request)) as {
     choices?: { message?: { content?: string } }[];
   };
   const latencyMs = performance.now() - started;
@@ -267,8 +270,13 @@ export const runModel = (
   situation: Situation,
   modelId: string,
   apiKey: string,
-  prompt?: string
-): Promise<ModelTrace> =>
-  modelKindFor(modelId) === "decisions"
+  prompt?: string,
+  baseUrl?: string
+): Promise<ModelTrace> => {
+  if (baseUrl && modelKindFor(modelId) === 'decisions') {
+    return Promise.reject(new Error('JEV requires OpenRouter'));
+  }
+  return modelKindFor(modelId) === "decisions"
     ? runDecisions(situation, modelId, apiKey, prompt)
-    : runChat(situation, modelId, apiKey, prompt);
+    : runChat(situation, modelId, apiKey, prompt, baseUrl);
+};

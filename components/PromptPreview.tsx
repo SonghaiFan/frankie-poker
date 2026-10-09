@@ -43,15 +43,16 @@ export const PromptPreview: React.FC<PromptPreviewProps> = ({
   chartPreflop,
   children,
 }) => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const [raw, setRaw] = useState(false);
   const situation = sampleSituation(name, street);
   const parts = useMemo(() => promptParts(situation, modelId, prompt), [situation, modelId, prompt]);
   const rawBody = useMemo(() => rawRequestBody(situation, modelId, prompt), [situation, modelId, prompt]);
   const skipped = chartPreflop && street === GamePhase.PRE_FLOP;
 
-  const cost = costPerDecision(modelId, parts.tokens.total) * 100;
-  const costText = cost === 0 ? "$0" : cost < 0.1 ? `$${cost.toFixed(3)}` : `$${cost.toFixed(2)}`;
+  const perDecision = costPerDecision(modelId, parts.tokens.total);
+  const cost = perDecision === null ? null : perDecision * 100;
+  const costText = cost === null ? (lang === 'zh' ? '未知' : 'Unknown') : cost === 0 ? "$0" : cost < 0.1 ? `$${cost.toFixed(3)}` : `$${cost.toFixed(2)}`;
   const share = (n: number) => `${(n / parts.tokens.total) * 100}%`;
   const board = sampleBoard(street);
 

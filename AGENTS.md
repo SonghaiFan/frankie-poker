@@ -28,7 +28,8 @@ Do not commit generated `dist/` or `.tournament/` output.
 ## Setup and strategy assistance
 
 Read [`docs/agent-guide.md`](docs/agent-guide.md) for local setup, prompt writing,
-and UI verification. Never read or print real API keys. The current Vite build
-embeds the local key into browser JavaScript; never publish a keyed build.
+and UI verification. Never read or print real API keys. Only the local dev server
+injects the environment key; production builds exclude it. Hosted visitors supply
+their own key through settings. Never publish a keyed build or local env files.
 Preserve chat-model response contracts when changing strategy guidance.
 Request authorization before paid model calls or tournament runs.

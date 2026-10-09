@@ -48,9 +48,19 @@ npm run dev
 
 Open the local URL printed by Vite (normally `http://localhost:3000`). Restart Vite after changing the key.
 
-**Keep this setup local:** the current Vite configuration embeds the key in browser JavaScript. Do not upload `dist/`, deploy a build containing a personal key, or expose the dev server publicly. A public hosted version needs user-supplied credentials or an authenticated, rate-limited server proxy.
+The local dev server can use `.env.local`; keep that server private. Production builds always exclude the environment key.
+
+## Play online / bring your own key
+
+Open **Game settings → AI connection**, enter your own OpenRouter key, and choose **Save connection**. It stays in this browser's local storage across refreshes until you choose **Clear key**. Requests go directly to the provider; Frankie Poker does not store keys on its server. Use a trusted device and a key with a spending limit. Saving does not make a paid API call; playing does.
+
+OpenRouter supports the existing JEV and chat-model choices. **OpenAI-compatible** mode accepts an HTTPS API base URL (including `/v1` when required), a provider key, and a chat model ID. All opponents then use that model, with their existing chat prompts and styles. The provider must allow browser CORS requests and support Chat Completions with strict `json_schema` responses. Compatibility is not guaranteed for every provider; JEV requires OpenRouter. Custom-provider costs show as Unknown.
+
+For Vercel, deploy this Vite project with `npm run build` and output directory `dist`. Do not add a shared model key to Vercel. `.vercelignore` excludes local environment files and tournament output.
 
 ## Your first table
+
+Choose **Local Practice** to test without an API key: start with 1,000 free practice chips against simple rule-based opponents. Every decision runs on your device, including all four streets. Practice does not change your saved bankroll or opponent statistics. It ignores model prompts and provider settings; it is for testing the interface and game flow, not measuring poker strength.
 
 1. Enter a player name. Use the same name later to recover that name's saved bankroll and opponent settings in the same browser.
 2. Open **Game settings** on the welcome screen, or click your profile in the lobby, to choose an avatar and felt color.

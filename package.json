@@ -4,6 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "test:local": "esbuild scripts/test-local-practice.ts --bundle --platform=node --format=esm --outfile=.tournament/test-local-practice.mjs --log-level=error && node .tournament/test-local-practice.mjs",
+    "test:connection": "esbuild scripts/test-ai-connection.ts --bundle --platform=node --format=esm --outfile=.tournament/test-ai-connection.mjs --log-level=error && node .tournament/test-ai-connection.mjs",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",

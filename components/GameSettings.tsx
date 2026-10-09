@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { useLanguage } from '../services/i18n';
 import { PLAYER_AVATARS, useGameSettings } from '../services/gameSettings';
 import { Avatar } from './Avatar';
+import { AIConnectionSettings } from './AIConnectionSettings';
 
 const FELTS = ['#35654d', '#344e70', '#594568', '#75533b', '#292929'];
 
@@ -15,7 +16,7 @@ const Check = ({ className = '' }: { className?: string }) => (
 // How you look at the table: avatar and felt. Built like the opponent sheet —
 // rises from the bottom on a phone, settles in the middle on a larger screen —
 // and every change shows straight away on the felt behind it.
-export function GameSettings({ onClose, name }: { onClose: () => void; name?: string }) {
+export function GameSettings({ onClose, name, requireConnection = false }: { onClose: () => void; name?: string; requireConnection?: boolean }) {
   const { t } = useLanguage();
   const { settings, update } = useGameSettings();
   const done = useRef<HTMLButtonElement>(null);
@@ -62,6 +63,7 @@ export function GameSettings({ onClose, name }: { onClose: () => void; name?: st
         </div>
 
         <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar px-5 space-y-7 pb-2">
+          <AIConnectionSettings required={requireConnection} />
           <section>
             <h3 className="text-[14px] text-white/45 mb-2">{t.profile.avatar}</h3>
             <div className="grid grid-cols-4 gap-2" role="group" aria-label={t.profile.avatar}>

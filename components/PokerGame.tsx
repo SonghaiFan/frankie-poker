@@ -11,6 +11,7 @@ import { determineWinner } from '../services/pokerEvaluator';
 import { recordAction, startHandStats } from '../services/playerStats';
 import { entryKey, loadSeatStats, saveSessionStats } from '../services/seatStats';
 import { useLanguage } from '../services/i18n';
+import { isLocalGame } from '../services/localPractice';
 
 interface PokerGameProps {
     config: GameConfig;
@@ -691,7 +692,7 @@ export const PokerGame: React.FC<PokerGameProps> = ({ config, wealth, onWealthCh
     // so the lobby can show how a style you set actually played
     const statsBase = useRef(loadSeatStats(config.playerName));
     useEffect(() => {
-        if (!gameState.winningHand) return;
+        if (!gameState.winningHand || isLocalGame(config)) return;
         const session: Record<string, NonNullable<Player['stats']>> = {};
         gameState.players.forEach(p => {
             if (!p.isHuman && p.styleKey && p.stats) session[entryKey(p.name, p.styleKey)] = p.stats;
@@ -752,6 +753,7 @@ export const PokerGame: React.FC<PokerGameProps> = ({ config, wealth, onWealthCh
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
                     </button>
+                    {isLocalGame(config) && <span className="ml-2 text-sm text-white/60">{t.venues.local.name} · {t.venues.local.desc}</span>}
                 </div>
 
                 <div className="shrink-0 animate-slide-in-top">

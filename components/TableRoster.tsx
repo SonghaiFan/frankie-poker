@@ -5,6 +5,7 @@ import { useLanguage } from "../services/i18n";
 import { Avatar } from "./Avatar";
 import { summarise } from "../services/playerStats";
 import { SeatStatsSheet } from "./SeatStatsSheet";
+import { LOCAL_MODEL } from '../services/localPractice';
 
 interface TableRosterProps {
   players: Player[]; // everyone, in seat order, you included
@@ -26,7 +27,7 @@ const pct = (v: number | null) => (v === null ? "–" : `${Math.round(v * 100)}`
 // Desktop only: every seat at once, with what the phone keeps behind a long press —
 // model, style, position, and how they have actually been playing.
 export const TableRoster: React.FC<TableRosterProps> = ({ players, activePlayerId, bigBlind, buyIn }) => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const [statsFor, setStatsFor] = useState<string | null>(null);
   const statsPlayer = players.find((p) => p.id === statsFor);
   const hero = players.find((p) => p.isHuman);
@@ -60,7 +61,9 @@ export const TableRoster: React.FC<TableRosterProps> = ({ players, activePlayerI
           const style = p.persona ? t.personas[p.persona.id]?.label || p.persona.label : "";
           const word = STATUS_WORD[p.status];
           const tilted = (p.tilt ?? 1) > 1.05;
-          const sub = p.isHuman ? t.desk.you : [model?.label, style].filter(Boolean).join(" · ");
+          const sub = p.isHuman ? t.desk.you : p.model === LOCAL_MODEL
+            ? (lang === 'zh' ? '规则对手' : 'Rule-based bot')
+            : [model?.label ?? p.model, style].filter(Boolean).join(" · ");
 
           return (
             <li key={p.id}>

@@ -106,7 +106,7 @@ export interface AIModelOption {
   kind: AIModelKind; // "decisions" = TypeSafe Decisions API, "chat" = OpenAI-compatible chat completions
   reasoning?: "off" | "low" | "medium" | "high"; // chat models that think: switch it off or cap the effort to keep the table moving
   color?: string; // seat colour
-  pricePerM: { input: number; output: number }; // USD per million tokens, from OpenRouter
+  pricePerM: { input: number; output: number } | null; // null when custom-provider pricing is unknown
 }
 
 // One opponent as set up in the lobby.
@@ -120,6 +120,7 @@ export interface OpponentSeat {
 }
 
 export interface GameConfig {
+  mode?: 'online' | 'local'; // absent keeps existing online behavior
   playerName?: string; // Added for login flow
   startingStackHuman: number;
   startingStackAI: number;

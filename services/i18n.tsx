@@ -267,9 +267,9 @@ export const translations: Record<Language, Translations> = {
 
     profile: {
       title: "Your look",
-      edit: "Change avatar and table colour",
+      edit: "Game settings and API key",
       you: "You",
-      subtitle: "Avatar and table colour",
+      subtitle: "AI connection, avatar and table colour",
       avatar: "Avatar",
       felt: "Table colour",
       feltNames: ["Forest", "Ocean", "Plum", "Walnut", "Charcoal"],
@@ -425,6 +425,7 @@ export const translations: Record<Language, Translations> = {
     },
 
     venues: {
+      local: { name: 'Local Practice', sub: 'On this device', desc: 'Rule-based · No API key' },
       footscray: {
         name: "Footscray Social Room",
         sub: "Inner West",
@@ -539,9 +540,9 @@ export const translations: Record<Language, Translations> = {
 
     profile: {
       title: "个人形象",
-      edit: "更换头像和桌布颜色",
+      edit: "游戏设置与 API 密钥",
       you: "你",
-      subtitle: "头像与桌布颜色",
+      subtitle: "AI 连接、头像与桌布颜色",
       avatar: "头像",
       felt: "桌布颜色",
       feltNames: ["森林", "深海", "暮紫", "暖棕", "炭黑"],
@@ -697,6 +698,7 @@ export const translations: Record<Language, Translations> = {
     },
 
     venues: {
+      local: { name: '本地练习', sub: '在此设备运行', desc: '规则对手 · 无需密钥' },
       footscray: {
         name: "Footscray 社区牌室",
         sub: "墨尔本内西区",

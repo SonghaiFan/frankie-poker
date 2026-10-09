@@ -5,6 +5,7 @@ import { applyVariablePlugins } from "./variablePlugins";
 
 import { Card, GamePhase, Player, PlayerStats, Suit } from "../types";
 import { AI_MODELS } from "../constants";
+import { getAIConnection } from './aiConnection';
 import { buildChatRequest, buildDecisionsRequest, modelKindFor, playInstructions } from "./aiProviders";
 import { Situation, buildSituation } from "./pokerSituation";
 import { PROMPT_FIELDS } from "./promptFields";
@@ -258,6 +259,6 @@ export const promptParts = (situation: Situation, modelId: string, prompt: strin
 const ANSWER_TOKENS = 80;
 export const costPerDecision = (modelId: string, inputTokens: number) => {
   const m = AI_MODELS.find((x) => x.id === modelId);
-  if (!m) return 0;
+  if (!m?.pricePerM || getAIConnection().provider === 'compatible') return null;
   return (inputTokens * m.pricePerM.input + ANSWER_TOKENS * m.pricePerM.output) / 1e6;
 };

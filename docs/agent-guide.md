@@ -6,7 +6,7 @@ Frankie Poker is a local-first poker playground. An agent helps the human config
 
 Read `AGENTS.md`, `README.md`, `package.json`, and the relevant source before editing. Check the current branch and working-tree changes; preserve unrelated work. Use Node.js 22+ and `npm ci`.
 
-Copy `.env.example` to `.env.local` only if the latter does not already exist. Ask the human to set `OPENROUTER_API_KEY` privately. Never open, print, paste, commit, or screenshot a real key. The Vite configuration embeds this key in client JavaScript, so a keyed build is for local use only. Never publish it.
+Copy `.env.example` to `.env.local` only if the latter does not already exist. Ask the human to set `OPENROUTER_API_KEY` privately, or use Game settings → AI connection. Never open, print, paste, commit, or screenshot a real key. Only the local dev server injects the environment key; production builds always exclude it. Hosted visitors supply their own key, saved in browser localStorage until Clear key. Never publish a keyed build or upload local environment files. For UI verification use dummy credentials on an isolated preview origin and make no paid requests.
 
 Start `npm run dev` and use the URL Vite prints. Do not assume a previously running server belongs to this checkout. The dev server binds all interfaces by default; use `npm run dev -- --host 127.0.0.1` for a loopback-only session.
 
@@ -39,7 +39,7 @@ Use `docs/strategies/cautious-value.md` as a starting point. Keep a copy of the 
 5. Use Preview for all four streets. Check known references, absent values, available legal actions, and Raw request content. Token/cost figures are estimates.
 6. Verify that closing and reopening the editor retains the draft. Browser state is per origin and player name; other ports and browser profiles have separate storage.
 
-Preview is local request inspection, not proof that the model followed the strategy. Actual hands make paid API requests. Obtain the human's authorization and budget before running a game or tournament on their behalf. A few successful hands do not establish strategy strength.
+Preview is local request inspection, not proof that the model followed the strategy. Local Practice is key-free and uses offline rules; use it for UI/game-flow checks. Other venues make paid API requests. Obtain the human's authorization and budget before running paid games or tournaments on their behalf. A few successful hands do not establish strategy strength.
 
 ## 5. Extend only when needed
 

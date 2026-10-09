@@ -81,7 +81,7 @@ export const OpponentSheet: React.FC<OpponentSheetProps> = ({ seat, menu, model,
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  const currentModel = AI_MODELS.find((m) => m.id === model);
+  const currentModel = menu.find((m) => m.id === model) ?? AI_MODELS.find((m) => m.id === model);
   // The box holds its own draft, so clearing it to start over doesn't snap the default back in.
   // What is saved: "" (the default) unless the text says something else.
   const defaultPrompt = modelKindFor(model) === "decisions" ? ACTION_INSTRUCTIONS : DEFAULT_CHAT_PROMPT_TEMPLATE;
