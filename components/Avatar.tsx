@@ -1,3 +1,4 @@
+import { PLAYER_AVATARS, useGameSettings } from "../services/gameSettings";
 import React, { useState } from "react";
 import {
   HERO_AVATAR,
@@ -23,7 +24,8 @@ export const Avatar: React.FC<AvatarProps> = ({
   onError,
   ...rest
 }) => {
-  const primarySrc = src || (isHuman ? HERO_AVATAR : avatarFor(name));
+  const { settings } = useGameSettings();
+  const primarySrc = src || (isHuman ? PLAYER_AVATARS[settings.avatar] : avatarFor(name));
   const secondarySrc = fallbackSrc || (isHuman ? HERO_EMOJI_AVATAR : emojiAvatarFor(name));
 
   // 0: try primary asset avatar, 1: try emoji fallback avatar, 2: failed both -> render emoji symbol

@@ -25,3 +25,9 @@ dist-ssr
 
 # Tournament runs
 .tournament
+
+# Credentials and local hosting configuration
+.env
+.env.*
+!.env.example
+.vercel/

@@ -24,3 +24,11 @@ npm run build
 ```
 
 Do not commit generated `dist/` or `.tournament/` output.
+
+## Setup and strategy assistance
+
+Read [`docs/agent-guide.md`](docs/agent-guide.md) for local setup, prompt writing,
+and UI verification. Never read or print real API keys. The current Vite build
+embeds the local key into browser JavaScript; never publish a keyed build.
+Preserve chat-model response contracts when changing strategy guidance.
+Request authorization before paid model calls or tournament runs.

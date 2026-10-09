@@ -1,3 +1,4 @@
+import { ModelBrandIcon } from "./ModelBrandIcon";
 import React, { useEffect, useRef, useState } from "react";
 import { animate } from "framer-motion";
 import { Avatar } from "./Avatar";
@@ -18,6 +19,7 @@ export interface SnakeRow {
   id: string;
   title: string;
   subtitle: string;
+  model?: string;
   marked?: boolean; // shows the prompt mark
 }
 
@@ -141,17 +143,23 @@ export const SeatSnake: React.FC<SeatSnakeProps> = ({
             aria-hidden={!here}
             aria-haspopup="dialog"
             className={`
-              absolute inset-x-0 flex items-center gap-4 px-5 text-left select-none [-webkit-touch-callout:none]
+              group absolute inset-x-0 flex items-center gap-4 px-5 rounded-2xl text-left select-none [-webkit-touch-callout:none]
               transition-[opacity,background-color,transform,top] duration-300 cursor-pointer
               ${here ? "opacity-100" : "opacity-0 pointer-events-none"}
-              hover:bg-white/[0.03] active:bg-white/[0.06] active:scale-[0.98]
+              hover:bg-white/[0.06] focus-visible:bg-white/[0.06] focus-visible:outline focus-visible:outline-1 focus-visible:outline-white/30 active:bg-white/[0.08] active:scale-[0.98]
             `}
             style={{ top: stop(j), height: ROW_H }}
           >
             <span className="w-12 h-12 shrink-0" />
             <span className="flex-1 min-w-0">
               <span className="block text-[17px] text-white truncate">{row.title}</span>
-              <span className="block text-[14px] text-white/45 truncate">{row.subtitle}</span>
+              <span className="flex items-center gap-1.5 text-[14px] text-white/45 min-w-0">{row.model && <ModelBrandIcon model={row.model} size={14} />}<span className="truncate">{row.subtitle}</span></span>
+            </span>
+            <span aria-hidden="true" className="shrink-0 text-white/55 opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100 [@media(hover:none)]:opacity-40">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4 7h6m4 0h6M4 17h10m4 0h2" />
+                <circle cx="12" cy="7" r="2" /><circle cx="16" cy="17" r="2" />
+              </svg>
             </span>
             {row.marked && (
               <span className="text-white/35 shrink-0" title={markTitle}>
@@ -162,10 +170,14 @@ export const SeatSnake: React.FC<SeatSnakeProps> = ({
         );
       })}
 
-      {/* Every face keeps the same circular frame in the stack and the list. */}
+      {/* Faces keep their position as the circular stack opens into an unframed list. */}
       {rows.map((row, j) => {
         const s = at(j);
         const { x, y } = point(s);
+        // Morph along each face's own journey, so size and frame reverse smoothly too.
+        const distance = stop(j) - start(j);
+        const progress = distance > 0 ? Math.max(0, Math.min(1, (s - start(j)) / distance)) : Number(unfolded);
+        const opened = progress * progress * (3 - 2 * progress);
         return (
           <span
             key={row.id}
@@ -177,9 +189,9 @@ export const SeatSnake: React.FC<SeatSnakeProps> = ({
               zIndex: j + 1, // the head, leftmost, lies on top of the stack
               transition: snaking ? "none" : `transform ${GLIDE}, padding ${GLIDE}, background-color ${GLIDE}, box-shadow ${GLIDE}`,
               animation: `fade-in ${GLIDE_MS}ms ease-out`, // a new seat fades in where it lands
-              padding: 6,
-              backgroundColor: "rgb(var(--felt-surface-rgb))",
-              boxShadow: "0 0 0 3px rgb(var(--felt-separator-rgb))",
+              padding: 6 * (1 - opened),
+              backgroundColor: `rgba(var(--felt-surface-rgb), ${1 - opened})`,
+              boxShadow: `0 0 0 3px rgba(var(--felt-separator-rgb), ${1 - opened})`,
             }}
           >
             <Avatar name={row.id} alt="" className="w-full h-full object-contain" />

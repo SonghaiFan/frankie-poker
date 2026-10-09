@@ -400,12 +400,12 @@ export const translations: Record<Language, Translations> = {
 
     venues: {
       footscray: {
-        name: "Footscray Courts",
+        name: "Footscray Social Room",
         sub: "Inner West",
         desc: "Entry-Level",
       },
       boxhill: {
-        name: "Box Hill Centre",
+        name: "Box Hill Card Room",
         sub: "Eastern Hub",
         desc: "Middle-Class",
       },
@@ -659,12 +659,12 @@ export const translations: Record<Language, Translations> = {
 
     venues: {
       footscray: {
-        name: "Footscray 街头球场",
+        name: "Footscray 社区牌室",
         sub: "墨尔本内西区",
         desc: "新手入门",
       },
       boxhill: {
-        name: "Box Hill 商业中心",
+        name: "Box Hill 棋牌室",
         sub: "华人商圈核心",
         desc: "中产常规局",
       },

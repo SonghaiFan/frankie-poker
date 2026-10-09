@@ -1,6 +1,7 @@
+import { ModelBrandIcon } from "./ModelBrandIcon";
 import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { AI_MODELS, modelCostPerM } from "../constants";
+import { AI_MODELS } from "../constants";
 import { AIModelOption, GamePhase, PlayerStats } from "../types";
 import { useLanguage } from "../services/i18n";
 import { Avatar } from "./Avatar";
@@ -28,15 +29,7 @@ interface OpponentSheetProps {
 }
 
 const START_POINT: StylePoint = { x: 0.3, y: 0.7 }; // where the dot lands when you first give a seat a style
-// Every model, cheapest first; the ones this venue doesn't serve are shown but can't be picked
-const ALL_MODELS = [...AI_MODELS].sort((a, b) => modelCostPerM(a) - modelCostPerM(b));
 const PROMPT_LIMIT = 12000;
-
-const Chevron = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="m6 9 6 6 6-6" />
-  </svg>
-);
 
 // Desktop settings sit beside one shared prompt workspace.
 const WIDE = "(min-width: 1024px)";
@@ -122,36 +115,24 @@ export const OpponentSheet: React.FC<OpponentSheetProps> = ({ seat, menu, model,
   const stateOf = (name: string): VarState =>
     !isKnownField(name) ? "unknown" : valueAt(spot, name) === undefined ? "absent" : "known";
 
-  // Model
+  // Availability and selection share one surface, scoped to this opponent.
   const modelSection = (
     <section>
-      <h3 className="text-[14px] text-white/45 mb-2">{t.seat.model}</h3>
-      {/* A native select under a styled face: on a phone it opens the system picker */}
-      <label className="relative flex items-center gap-3 h-[60px] px-4 rounded-[20px] bg-black/35 border border-white/10 focus-within:border-white/30 transition-colors cursor-pointer">
-        <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: currentModel?.color ?? "#fff" }} />
-        <span className="flex-1 min-w-0">
-          <span className="block text-[16px] text-white truncate">{currentModel?.label ?? model}</span>
-          <span className="block text-[13px] text-white/40 truncate">{currentModel?.sub}</span>
-        </span>
-        <span className="text-white/50 shrink-0">
-          <Chevron />
-        </span>
-        <select
-          value={model}
-          onChange={(e) => onChange({ ...seat, model: e.target.value })}
-          aria-label={t.seat.model}
-          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer text-[16px]"
-        >
-          {ALL_MODELS.map((m) => {
-            const served = menu.some((x) => x.id === m.id);
-            return (
-              <option key={m.id} value={m.id} disabled={!served}>
-                {served ? `${m.label} · ${m.sub}` : `${m.label} · ${t.seat.offMenu}`}
-              </option>
-            );
-          })}
-        </select>
-      </label>
+      <h3 className="text-[14px] text-white/45 mb-2">{t.desk.venueMenu}</h3>
+      <div className="flex flex-col gap-1" role="group" aria-label={t.seat.model}>
+        {menu.map(m => (
+          <button key={m.id} type="button" aria-pressed={model === m.id}
+            onClick={() => onChange({ ...seat, model: m.id })}
+            className={`flex items-center gap-3 w-full min-h-[52px] rounded-[14px] px-3 py-2 text-left transition-colors cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-white/70 ${model === m.id ? "bg-white/10 text-white" : "text-white/60 hover:bg-white/5 hover:text-white"}`}>
+            <ModelBrandIcon model={m.id} size={20} />
+            <span className="flex-1 min-w-0">
+              <span className="block text-[14px]">{m.label}</span>
+              <span className="block text-[12px] text-white/40">{m.sub}</span>
+            </span>
+            {model === m.id && <span aria-hidden="true" className="text-white/80">✓</span>}
+          </button>
+        ))}
+      </div>
     </section>
   );
 

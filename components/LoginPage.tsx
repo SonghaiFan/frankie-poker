@@ -6,13 +6,14 @@ import { PlayingCard } from "./PlayingCard";
 import { Suit } from "../types";
 
 interface LoginPageProps {
+  onOpenSettings: () => void;
   onLogin: (username: string) => void;
   isExiting?: boolean;
 }
 
 // The front door: the name of the game, your name, and a way in.
-export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, isExiting }) => {
-  const { t } = useLanguage();
+export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, isExiting, onOpenSettings }) => {
+  const { t, lang } = useLanguage();
   const [username, setUsername] = useState("");
   const name = username.trim();
 
@@ -50,6 +51,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, isExiting }) => {
         style={{ paddingBottom: "max(1.25rem, env(safe-area-inset-bottom))" }}
       >
         <div className="h-14 px-5 flex items-center justify-end shrink-0">
+          <button type="button" onClick={onOpenSettings} className="mr-auto text-sm text-white/65 px-3 py-2 rounded-full bg-white/5">{lang === "zh" ? "游戏设置" : "Game settings"}</button>
           <LanguageToggle />
         </div>
 

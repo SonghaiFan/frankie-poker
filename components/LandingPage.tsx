@@ -1,3 +1,8 @@
+import venueIcon0 from "../assets/venues/footscray.png";
+import venueIcon1 from "../assets/venues/box-hill.png";
+import venueIcon2 from "../assets/venues/glen-waverley.png";
+import venueIcon3 from "../assets/venues/balwyn.png";
+import venueIcon4 from "../assets/venues/toorak.png";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AI_MODELS, DEFAULT_CONFIG, modelCostPerM } from "../constants";
 import { STARTING_WEALTH } from "../services/bankroll";
@@ -12,6 +17,7 @@ import { CUSTOM, personaFor, styleKeyOf } from "../services/style";
 import { loadSeatStats } from "../services/seatStats";
 
 interface LandingPageProps {
+  onOpenSettings: () => void;
   onStartGame: (config: GameConfig) => void;
   username: string | null;
   wealth: number;
@@ -27,31 +33,31 @@ interface GameVenue {
   blindBig: number;
   desc: string;
   budgetPerM: number;
-  emoji: string;
+  icon: string;
   bgClass: string;
 }
 
 const VENUES: GameVenue[] = [
   {
     id: "footscray",
-    name: "Footscray Courts",
+    name: "Footscray Social Room",
     sub: "Inner West",
     buyIn: 200,
     blindBig: 2,
     desc: "Entry-Level",
     budgetPerM: 0.05,
-    emoji: "🏀",
+    icon: venueIcon0,
     bgClass: "from-[#fef08a] to-[#fde047]", // butter yellow
   },
   {
     id: "boxhill",
-    name: "Box Hill Centre",
+    name: "Box Hill Card Room",
     sub: "Eastern Hub",
     buyIn: 1000,
     blindBig: 10,
     desc: "Middle-Class",
     budgetPerM: 1,
-    emoji: "🥟",
+    icon: venueIcon1,
     bgClass: "from-[#bbf7d0] to-[#86efac]", // mint jade
   },
   {
@@ -62,7 +68,7 @@ const VENUES: GameVenue[] = [
     blindBig: 100,
     desc: "Family-Stability",
     budgetPerM: 3,
-    emoji: "🎓",
+    icon: venueIcon2,
     bgClass: "from-[#bae6fd] to-[#93c5fd]", // sky blue
   },
   {
@@ -73,7 +79,7 @@ const VENUES: GameVenue[] = [
     blindBig: 1000,
     desc: "Old Money",
     budgetPerM: 4,
-    emoji: "🏛️",
+    icon: venueIcon3,
     bgClass: "from-[#e9d5ff] to-[#d8b4fe]", // lavender
   },
   {
@@ -84,9 +90,17 @@ const VENUES: GameVenue[] = [
     blindBig: 5000,
     desc: "Top of the Chain",
     budgetPerM: Infinity,
-    emoji: "👑",
+    icon: venueIcon4,
     bgClass: "from-[#fed7aa] to-[#fdba74]", // amber peach
   },
+];
+
+// Column spans for the venue grid, by position: a wide lead card, then pairs
+// (two columns); two halves, then three thirds (six-column track).
+const VENUE_SPAN = [
+  "col-span-2 md:col-span-3 lg:col-span-2 xl:col-span-3",
+  "col-span-1 md:col-span-3 lg:col-span-1 xl:col-span-3",
+  "col-span-1 md:col-span-2 lg:col-span-1 xl:col-span-2",
 ];
 
 const MIN_OPPONENTS = 1;
@@ -116,11 +130,12 @@ const Lock = () => (
 export const LandingPage: React.FC<LandingPageProps> = ({
   onStartGame,
   username,
+  onOpenSettings,
   wealth,
   onTopUp,
   isExiting,
 }) => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const [venueIndex, setVenueIndex] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
 
@@ -229,10 +244,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       <div className="w-full max-w-[480px] sm:max-w-[720px] md:max-w-[880px] lg:max-w-[1080px] mx-auto min-h-full flex flex-col">
         {/* You, and the language */}
         <div className="h-14 px-5 flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-2 h-9 pl-1 pr-3.5 rounded-full bg-[#1c1c1e] min-w-0">
+          <button type="button" onClick={onOpenSettings} aria-label={lang === "zh" ? "游戏设置" : "Game settings"} className="flex items-center gap-2 h-9 pl-1 pr-3.5 rounded-full bg-[#1c1c1e] min-w-0 cursor-pointer">
             <Avatar isHuman alt="" className="w-7 h-7 object-contain" />
             <span className="text-[14px] text-white truncate">{username || t.setup.unknown}</span>
-          </div>
+            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-white/45">
+              <path d="m9 3-.6 2.3-2 .9-2.2-.7-3 5.2 1.7 1.6v2.3l-1.7 1.6 3 5.2 2.2-.7 2 .9L9 24h6l.6-2.4 2-.9 2.2.7 3-5.2-1.7-1.6v-2.3l1.7-1.6-3-5.2-2.2.7-2-.9L15 3z" transform="translate(1 0) scale(.9)" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          </button>
           <LanguageToggle />
         </div>
 
@@ -275,25 +294,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 onClick={() => scrollToVenue(i)}
                 aria-pressed={i === venueIndex}
                 className={`
-                  relative shrink-0 w-[84%] h-[220px] snap-start rounded-[32px] p-6 text-left
+                  relative overflow-hidden shrink-0 w-[84%] h-[260px] snap-start rounded-[32px] p-6 text-left
                   flex flex-col justify-between bg-gradient-to-br ${v.bgClass} text-black select-none cursor-pointer
                   transition-opacity duration-300 ${i === venueIndex ? "opacity-100" : "opacity-60"}
                 `}
               >
-                <div className="flex items-start justify-between">
-                  <span className="text-[52px] leading-none">{v.emoji}</span>
-                  {!open && (
-                    <span className="w-8 h-8 rounded-full bg-black/10 flex items-center justify-center text-black/60">
-                      <Lock />
-                    </span>
-                  )}
-                </div>
-                <div>
+                <img src={v.icon} alt="" draggable={false} className="absolute right-[-16%] bottom-[-30%] h-[90%] w-auto max-w-none aspect-square object-contain pointer-events-none" />
+                <div className="relative z-10 pr-8">
                   <div className="text-[26px] leading-tight tracking-tight">{venueName(v)}</div>
-                  <div className="mt-1 text-[15px] text-black/55">
-                    {t.setup.venueLine(v.buyIn, v.blindBig / 2, v.blindBig)}
-                  </div>
+                  <div className="mt-1 text-[15px] text-black/55">{t.setup.venueLine(v.buyIn, v.blindBig / 2, v.blindBig)}</div>
                 </div>
+                {!open && <span className="absolute top-5 right-5 z-10 w-8 h-8 rounded-full bg-black/10 flex items-center justify-center text-black/60"><Lock /></span>}
               </button>
             );
           })}
@@ -301,8 +312,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           <div className="shrink-0 w-[calc(16%-32px)]" aria-hidden />
         </div>
 
-        {/* Tablet and desktop: venue grids expand from two to three columns. */}
-        <div className="hidden sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-3 px-5">
+        {/* Tablet and desktop: five venues laid out evenly, never leaving a hole —
+            1 + 2 + 2 in two columns, 2 + 3 on a six-column track when wider. */}
+        <div className="hidden sm:grid grid-cols-2 md:grid-cols-6 lg:grid-cols-2 xl:grid-cols-6 gap-3 px-5">
           {VENUES.map((v, i) => {
             const open = affordable(v, wealth);
             const on = i === venueIndex;
@@ -316,50 +328,25 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 }}
                 aria-pressed={on}
                 className={`
-                  relative min-w-0 h-[168px] rounded-[28px] p-4 xl:p-5 text-left flex flex-col justify-between
+                  relative overflow-hidden min-w-0 h-[260px] xl:h-[280px] rounded-[28px] p-4 xl:p-5 text-left flex flex-col justify-between
+                  ${VENUE_SPAN[i] ?? VENUE_SPAN[VENUE_SPAN.length - 1]}
                   bg-gradient-to-br ${v.bgClass} text-black select-none cursor-pointer
                   transition-[opacity,transform,box-shadow] duration-300
                   ${on ? "opacity-100 ring-2 ring-white ring-offset-4 ring-offset-black" : "opacity-55 hover:opacity-80"}
                 `}
               >
-                <div className="flex items-start justify-between">
-                  <span className="text-[40px] leading-none">{v.emoji}</span>
-                  {!open && (
-                    <span className="w-7 h-7 rounded-full bg-black/10 flex items-center justify-center text-black/60">
-                      <Lock />
-                    </span>
-                  )}
-                </div>
-                <div className="min-w-0">
-                  <div className="text-[17px] xl:text-[19px] leading-tight tracking-tight truncate">{venueName(v)}</div>
+                <img src={v.icon} alt="" draggable={false} className="absolute right-[-18%] bottom-[-30%] h-[90%] w-auto max-w-none aspect-square object-contain pointer-events-none" />
+                <div className="relative z-10 min-w-0 pr-5">
+                  <div className="text-[17px] xl:text-[19px] leading-tight tracking-tight line-clamp-2">{venueName(v)}</div>
                   <div className="mt-0.5 text-[13px] text-black/55 truncate">{t.venues[v.id]?.desc ?? v.desc}</div>
                   <div className="text-[13px] text-black/55 truncate">{t.setup.venueLine(v.buyIn, v.blindBig / 2, v.blindBig)}</div>
                 </div>
+                {!open && <span className="absolute top-4 right-3 z-10 w-6 h-6 rounded-full bg-black/10 flex items-center justify-center text-black/60"><Lock /></span>}
               </button>
             );
           })}
         </div>
 
-        {/* Desktop: what the chosen venue serves */}
-        <div className="hidden sm:block px-5 pt-6 pb-4 lg:pt-8 lg:pb-8">
-          <div className="flex items-baseline justify-between gap-4">
-            <h3 className="text-[15px] text-white/45">{t.desk.venueMenu}</h3>
-            <span className="text-[13px] text-white/35">
-              {t.desk.venueStake} · {venueName(venue)}
-            </span>
-          </div>
-          <ul className="mt-3 grid grid-cols-2 gap-2">
-            {menu.map((m) => (
-              <li key={m.id} className="flex items-center gap-3 h-[52px] px-4 rounded-[18px] bg-[#1c1c1e]/70 min-w-0">
-                <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: m.color ?? "#fff" }} />
-                <span className="min-w-0">
-                  <span className="block text-[14px] text-white truncate">{m.label}</span>
-                  <span className="block text-[12px] text-white/40 truncate">{m.sub}</span>
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
         </div>
 
         <div className="flex-1 flex flex-col lg:self-stretch">
@@ -407,6 +394,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           rows={seats.map((seat, i) => ({
             id: seat.id,
             title: seat.id,
+            model: modelAt(seat, i),
             subtitle: [
               AI_MODELS.find((x) => x.id === modelAt(seat, i))?.label,
               seat.strategy === NATURAL ? "" : seat.strategy === CUSTOM ? t.seat.custom : t.personas[seat.strategy]?.name,
