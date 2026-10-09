@@ -8,6 +8,17 @@ An open-source No-Limit Texas Hold'em playground for people who want to play aga
 
 ![Choose a venue and configure your opponents](docs/images/lobby.png)
 
+<details>
+<summary>Watch a hand on desktop and mobile</summary>
+
+Real gameplay against JEV, from player actions through showdown. The mobile recording uses a 390 × 844 browser viewport.
+
+![Desktop gameplay](docs/images/gameplay-desktop.gif)
+
+<img src="docs/images/gameplay-mobile.gif" alt="Mobile gameplay" width="390" />
+
+</details>
+
 ## What you can do
 
 - Play against JEV, Gemini, Claude, GPT, Grok, DeepSeek, and Kimi through OpenRouter. Available models depend on the venue; provider availability can change.
@@ -65,6 +76,17 @@ Search for information such as equity, position, or pot odds and click a result 
 Changes save as you edit. **Done** closes the editor; **Restore default** resets the current model kind's prompt. Return to the table to try your changes in actual hands. Style presets can use chart-based preflop decisions; leave **Let the model decide** enabled when testing a model-driven strategy throughout the hand.
 
 Try the [cautious value strategy](docs/strategies/cautious-value.md), or ask your agent to write one for you.
+
+<details>
+<summary>Manual play-style settings</summary>
+
+Turn off **Let the model decide** to adjust the style map or choose a preset. The same controls work on desktop and mobile.
+
+![Desktop opponent settings](docs/images/player-settings-desktop.jpg)
+
+<img src="docs/images/player-settings-mobile.jpg" alt="Mobile opponent settings" width="390" />
+
+</details>
 
 ## Hand this project to your AI agent
 
