@@ -5,11 +5,10 @@ import { GameConfig } from "../types";
 import { useLanguage } from "../services/i18n";
 import { LanguageToggle } from "./LanguageToggle";
 import { OpponentSheet } from "./OpponentSheet";
-import { OpponentPicker } from "./OpponentPicker";
-import { OPPONENT_NAMES } from "../services/avatars";
+import { SeatSnake } from "./SeatSnake";
 import { Avatar } from "./Avatar";
-import { NATURAL, SeatSettings, loadSeats, saveSeats } from "../services/seats";
-import { personaFor, styleKeyOf } from "../services/style";
+import { NATURAL, SeatSettings, defaultSeat, defaultSeats, loadSeats, saveSeats } from "../services/seats";
+import { CUSTOM, personaFor, styleKeyOf } from "../services/style";
 import { loadSeatStats } from "../services/seatStats";
 
 interface LandingPageProps {
@@ -90,6 +89,7 @@ const VENUES: GameVenue[] = [
   },
 ];
 
+const MIN_OPPONENTS = 1;
 const MAX_OPPONENTS = 9;
 
 const affordable = (venue: GameVenue, wealth: number) => venue.buyIn <= wealth;
@@ -99,6 +99,12 @@ const menuFor = (venue: GameVenue) =>
   AI_MODELS.filter((m) => modelCostPerM(m) <= venue.budgetPerM).sort(
     (a, b) => modelCostPerM(a) - modelCostPerM(b)
   );
+
+const ChevronDown = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="m6 9 6 6 6-6" />
+  </svg>
+);
 
 const Lock = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -121,31 +127,35 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   const venue = VENUES[venueIndex];
   const menu = useMemo(() => menuFor(venue), [venue]);
 
-  const [seats, setSeats] = useState<SeatSettings[]>(() => loadSeats(username) ??
-    OPPONENT_NAMES.filter((_, i) => i % AI_MODELS.length === 0).map((id) => ({ id, model: AI_MODELS[0].id, strategy: NATURAL, prompt: "" })));
-  const [roster, setRoster] = useState<SeatSettings[]>(() => {
-    const saved = [...(loadSeats(username, "catalog") ?? []), ...seats];
-    const defaults = OPPONENT_NAMES.map((id, i): SeatSettings => ({ id, model: AI_MODELS[i % AI_MODELS.length].id, strategy: NATURAL, prompt: "" }));
-    const entries = new Map(defaults.map((s) => [s.id, s]));
-    saved.forEach((s) => entries.set(s.id, s));
-    return [...entries.values()];
-  });
+  // The opponents, remembered per player
+  const [seats, setSeats] = useState<SeatSettings[]>(() => loadSeats(username) ?? defaultSeats(5));
   useEffect(() => saveSeats(username, seats), [username, seats]);
-  useEffect(() => saveSeats(username, roster, "catalog"), [username, roster]);
+
+  // A seat keeps the model you chose for it; a venue that doesn't serve it seats them on one it does
+  const modelAt = (seat: SeatSettings, i: number) =>
+    menu.some((m) => m.id === seat.model) ? seat.model : menu[i % menu.length]?.id ?? AI_MODELS[0].id;
+
+  // A desktop has the room to show the table open from the start
+  const [unfolded, setUnfolded] = useState(() => window.matchMedia?.("(min-width: 1024px)").matches ?? false);
   const [editing, setEditing] = useState<string | null>(null);
+  // How each seat has played at this player's tables, per style (written by the game after every hand)
   const [record] = useState(() => loadSeatStats(username));
-  const editingSeat = roster.find((s) => s.id === editing);
-  const updateSeat = (next: SeatSettings) => {
-    setRoster((prev) => prev.map((s) => s.id === next.id ? next : s));
-    setSeats((prev) => prev.map((s) => s.id === next.id ? next : s));
-  };
-  const toggleSeat = (seat: SeatSettings) => setSeats((prev) => {
-    if (prev.some((s) => s.id === seat.id)) return prev.filter((s) => s.id !== seat.id);
-    if (prev.length >= MAX_OPPONENTS || !menu.some((m) => m.id === seat.model)) return prev;
-    return [...prev, seat];
+  const bind = (id: string): React.ButtonHTMLAttributes<HTMLButtonElement> => ({
+    onClick: () => setEditing(id),
+    onContextMenu: (e) => {
+      e.preventDefault();
+      setEditing(id);
+    },
   });
-  const unavailableSeats = seats.some((s) => !menu.some((m) => m.id === s.model));
-  const selectionIssue = seats.length === 0 ? t.setup.chooseAtLeastOne : unavailableSeats ? t.setup.unavailableOpponents : "";
+  const editingIndex = seats.findIndex((s) => s.id === editing);
+
+  const updateSeat = (next: SeatSettings) =>
+    setSeats((prev) => prev.map((s) => (s.id === next.id ? next : s)));
+
+  // A new opponent takes the top of the list and pushes the rest down; − takes the top one away again
+  const addSeat = () =>
+    setSeats((prev) => (prev.length >= MAX_OPPONENTS ? prev : [defaultSeat(prev.length, prev.map((s) => s.id)), ...prev]));
+  const removeSeat = () => setSeats((prev) => (prev.length <= MIN_OPPONENTS ? prev : prev.slice(1)));
 
   // --- Venue carousel: cards snap to the left edge; the one there is the one you pick ---
   const scrollToVenue = (i: number) => {
@@ -192,15 +202,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     blindBig: venue.blindBig,
     startingStackHuman: venue.buyIn,
     startingStackAI: venue.buyIn,
-    opponents: seats.map((s) => ({
+    opponents: seats.map((s, i) => ({
       name: s.id,
-      model: s.model,
+      model: modelAt(s, i),
       strategy: s.strategy,
       prompt: s.prompt,
       persona: personaFor(s.strategy, s.style),
       styleKey: styleKeyOf(s.strategy, s.style),
     })),
-    opponentModels: seats.map((s) => s.model),
+    opponentModels: seats.map((s, i) => modelAt(s, i)),
     opponentCount: seats.length,
   };
 
@@ -330,17 +340,94 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           })}
         </div>
 
+        {/* Desktop: what the chosen venue serves */}
+        <div className="hidden sm:block px-5 pt-6 pb-4 lg:pt-8 lg:pb-8">
+          <div className="flex items-baseline justify-between gap-4">
+            <h3 className="text-[15px] text-white/45">{t.desk.venueMenu}</h3>
+            <span className="text-[13px] text-white/35">
+              {t.desk.venueStake} · {venueName(venue)}
+            </span>
+          </div>
+          <ul className="mt-3 grid grid-cols-2 gap-2">
+            {menu.map((m) => (
+              <li key={m.id} className="flex items-center gap-3 h-[52px] px-4 rounded-[18px] bg-[#1c1c1e]/70 min-w-0">
+                <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: m.color ?? "#fff" }} />
+                <span className="min-w-0">
+                  <span className="block text-[14px] text-white truncate">{m.label}</span>
+                  <span className="block text-[12px] text-white/40 truncate">{m.sub}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
         </div>
-        <div className="flex-1 min-w-0 flex flex-col lg:self-stretch">
-          <OpponentPicker roster={roster} selected={seats} availableModels={menu.map((m) => m.id)} onToggle={toggleSeat} onEdit={setEditing} />
+        </div>
+
+        <div className="flex-1 flex flex-col lg:self-stretch">
+
+        {/* The table: faces stacked until you open it, then a list you can edit */}
+        <div className="px-5 pt-10 lg:pt-8 flex items-center justify-between gap-4">
+          <button
+            type="button"
+            onClick={() => setUnfolded((u) => !u)}
+            aria-expanded={unfolded}
+            className="flex items-center gap-1.5 text-[20px] text-white cursor-pointer"
+          >
+            {t.setup.yourTable}
+            <span className={`text-white/40 transition-transform duration-300 ${unfolded ? "rotate-180" : ""}`}>
+              <ChevronDown />
+            </span>
+          </button>
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              onClick={removeSeat}
+              disabled={seats.length <= MIN_OPPONENTS}
+              aria-label={t.setup.removeSeat}
+              className="w-9 h-9 rounded-full bg-[#1c1c1e] text-white text-[20px] leading-none disabled:opacity-30 active:scale-95 transition cursor-pointer disabled:cursor-default"
+            >
+              −
+            </button>
+            <span className="min-w-[88px] text-center text-[15px] text-white/70 tabular-nums">
+              {t.setup.playersCount(seats.length + 1)}
+            </span>
+            <button
+              type="button"
+              onClick={addSeat}
+              disabled={seats.length >= MAX_OPPONENTS}
+              aria-label={t.setup.addSeat}
+              className="w-9 h-9 rounded-full bg-[#1c1c1e] text-white text-[20px] leading-none disabled:opacity-30 active:scale-95 transition cursor-pointer disabled:cursor-default"
+            >
+              +
+            </button>
+          </div>
+        </div>
+        <p className="px-5 mt-1 text-[14px] text-white/35">{unfolded ? t.setup.tapToEdit : t.setup.tapToOpen}</p>
+
+        <SeatSnake
+          rows={seats.map((seat, i) => ({
+            id: seat.id,
+            title: seat.id,
+            subtitle: [
+              AI_MODELS.find((x) => x.id === modelAt(seat, i))?.label,
+              seat.strategy === NATURAL ? "" : seat.strategy === CUSTOM ? t.seat.custom : t.personas[seat.strategy]?.name,
+            ]
+              .filter(Boolean)
+              .join(" · "),
+            marked: seat.prompt.trim() !== "",
+          }))}
+          unfolded={unfolded}
+          onUnfold={() => setUnfolded(true)}
+          unfoldLabel={t.setup.tapToOpen}
+          markTitle={t.seat.customPrompt}
+          rowProps={bind}
+        />
 
         {/* Sit down */}
         <div
           className="felt-footer isolate sticky bottom-0 z-10 mt-auto px-5 pt-8"
           style={{ paddingBottom: "max(1.25rem, env(safe-area-inset-bottom))" }}
         >
-          {unavailableSeats && <p className="mb-3 text-[13px] text-amber-200">{t.setup.unavailableOpponents}</p>}
-          {canSit && !selectionIssue ? (
+          {canSit ? (
             <button
               type="button"
               onClick={() => onStartGame(config)}
@@ -355,7 +442,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               className="w-full h-[52px] rounded-full border border-white/15 text-white/40 text-[16px] flex items-center justify-center gap-2 cursor-default"
             >
               <Lock />
-              {!canSit ? t.setup.lockedCta(venue.buyIn, wealth) : seats.length === 0 ? t.setup.chooseAtLeastOne : t.seat.offMenu}
+              {t.setup.lockedCta(venue.buyIn, wealth)}
             </button>
           )}
         </div>
@@ -363,12 +450,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         </div>
       </div>
 
-      {editingSeat && (
+      {editingIndex !== -1 && (
         <OpponentSheet
-          key={editingSeat.id}
-          seat={editingSeat}
+          key={seats[editingIndex].id}
+          seat={seats[editingIndex]}
           menu={menu}
-          model={editingSeat.model}
+          model={modelAt(seats[editingIndex], editingIndex)}
           onChange={updateSeat}
           onClose={() => setEditing(null)}
           record={record}

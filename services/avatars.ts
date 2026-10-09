@@ -89,14 +89,7 @@ const NAME_TO_AVATAR: Record<string, string> = {
   Viktor: avatar15,
   Oliver: avatar05,
   Felix: avatar08,
-  Ada: avatar01,
-  Oscar: avatar07,
-  Maya: avatar11,
-  Leo: avatar12,
-  Nora: avatar13,
 };
-
-export const OPPONENT_NAMES = Object.keys(NAME_TO_AVATAR);
 
 export const avatarFor = (name: string): string => {
   if (name.toLowerCase() === "hero" || name === "You") return HERO_AVATAR;

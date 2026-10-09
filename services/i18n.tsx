@@ -46,12 +46,6 @@ export interface Translations {
     bankroll: string;
     stakes: string;
     yourTable: string;
-    chooseOpponents: string;
-    chooseOpponentsHint: string;
-    selectedOpponent: string;
-    unavailableOpponents: string;
-    chooseAtLeastOne: string;
-    tableFull: string;
     tapToEdit: string;
     tapToOpen: string;
     sitDown: (buyIn: number) => string;
@@ -280,12 +274,6 @@ export const translations: Record<Language, Translations> = {
       bankroll: "Bankroll",
       stakes: "Stakes",
       yourTable: "Your table",
-      chooseOpponents: "Choose your opponents",
-      chooseOpponentsHint: "Tap a face to add or remove them. Edit their model, style and prompt below.",
-      selectedOpponent: "Seated",
-      unavailableOpponents: "Some selected models aren't served here. Edit those opponents or remove them.",
-      chooseAtLeastOne: "Choose at least one opponent",
-      tableFull: "Table full · 9 opponents maximum",
       tapToEdit: "Click or tap an opponent to change how they play",
       tapToOpen: "Tap the faces to see who you're playing",
       sitDown: (buyIn) => `Sit down · ${buyIn.toLocaleString()} buy-in`,
@@ -535,12 +523,6 @@ export const translations: Record<Language, Translations> = {
       bankroll: "可用资金",
       stakes: "盲注级别",
       yourTable: "你的牌桌",
-      chooseOpponents: "选择你的对手",
-      chooseOpponentsHint: "点击头像加入或移出牌桌；点编辑可调整模型、打法和提示词。",
-      selectedOpponent: "已入座",
-      unavailableOpponents: "部分已选模型本场不提供，请编辑这些对手或将其移出牌桌。",
-      chooseAtLeastOne: "请至少选择一位对手",
-      tableFull: "牌桌已满 · 最多 9 位对手",
       tapToEdit: "点击对手，调整他们的打法",
       tapToOpen: "点开头像，看看你的对手",
       sitDown: (buyIn) => `入座 · 买入 ${buyIn.toLocaleString()}`,
