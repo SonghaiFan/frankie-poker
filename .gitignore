@@ -31,3 +31,6 @@ dist-ssr
 .env.*
 !.env.example
 .vercel/
+
+# GitHub Pages build output
+_site

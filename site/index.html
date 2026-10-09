@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Frankie Poker</title>
+  <meta name="description" content="An open-source Texas Hold'em playground. Play against language models, give each opponent a strategy, and see how they play." />
+  <meta name="theme-color" content="#13251d" />
+  <meta property="og:title" content="Frankie Poker" />
+  <meta property="og:description" content="Play poker with language models. Give them a strategy. See how they play." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://songhaifan.github.io/frankie-poker/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta property="og:image" content="https://songhaifan.github.io/frankie-poker/images/lobby.png" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="#" aria-label="Frankie Poker">
+      <img src="frank-signature.svg" alt="" class="signature" />
+      <span>Poker</span>
+    </a>
+    <nav class="top-actions">
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" data-set-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-set-lang="zh" aria-pressed="false">中文</button>
+      </div>
+      <a class="pill" href="https://github.com/SonghaiFan/frankie-poker">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        GitHub
+      </a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="hero">
+      <h1>
+        <span lang="en">Play poker with language models.<br /><em>Give them a strategy. See how they play.</em></span>
+        <span lang="zh">和大模型打德州扑克。<br /><em>给它一套打法，看它怎么出牌。</em></span>
+      </h1>
+      <p class="lede">
+        <span lang="en">An open-source No-Limit Texas Hold'em playground. Pick opponents, choose their models, edit their instructions, and inspect exactly what they see before taking a strategy to the table.</span>
+        <span lang="zh">一个开源的无限注德州扑克实验场。挑选对手、为它们选择模型、编辑提示词，并在上桌前逐街预览模型能看到的信息。</span>
+      </p>
+      <div class="cta">
+        <a class="btn primary" href="#start">
+          <span lang="en">Run it locally</span><span lang="zh">本地运行</span>
+        </a>
+        <a class="btn" href="https://github.com/SonghaiFan/frankie-poker">
+          <span lang="en">View source</span><span lang="zh">查看源码</span>
+        </a>
+      </div>
+      <p class="fineprint">
+        <span lang="en">Virtual chips · Bring your own OpenRouter key · MIT licensed</span>
+        <span lang="zh">虚拟筹码 · 使用你自己的 OpenRouter key · MIT 开源</span>
+      </p>
+
+      <figure class="shot hero-shot">
+        <img src="images/gameplay-desktop.gif" width="960" height="675" alt="A hand of Frankie Poker played on desktop, from first action through showdown" />
+      </figure>
+    </section>
+
+    <!-- Venues -->
+    <section class="section">
+      <div class="section-head">
+        <h2><span lang="en">Five rooms, one bankroll</span><span lang="zh">五个牌室，一份资金</span></h2>
+        <p>
+          <span lang="en">Start with 500 chips in Footscray. Win, and the higher-stakes rooms unlock.</span>
+          <span lang="zh">从 Footscray 的 500 筹码起步，赢下来，更高级别的牌室就会解锁。</span>
+        </p>
+      </div>
+      <ul class="venues">
+        <li class="venue v-footscray">
+          <div class="venue-text">
+            <h3><span lang="en">Footscray Social Room</span><span lang="zh">Footscray 社区牌室</span></h3>
+            <p><span lang="en">Entry-level</span><span lang="zh">新手入门</span> · 1/2</p>
+          </div>
+          <img src="venues/footscray.png" alt="" loading="lazy" />
+        </li>
+        <li class="venue v-boxhill">
+          <div class="venue-text">
+            <h3><span lang="en">Box Hill Card Room</span><span lang="zh">Box Hill 棋牌室</span></h3>
+            <p><span lang="en">Middle-class</span><span lang="zh">中产常规局</span> · 5/10</p>
+          </div>
+          <img src="venues/box-hill.png" alt="" loading="lazy" />
+        </li>
+        <li class="venue v-glen">
+          <div class="venue-text">
+            <h3><span lang="en">Glen Waverley</span><span lang="zh">Glen Waverley 名区</span></h3>
+            <p><span lang="en">Family stability</span><span lang="zh">稳健富足局</span> · 50/100</p>
+          </div>
+          <img src="venues/glen-waverley.png" alt="" loading="lazy" />
+        </li>
+        <li class="venue v-balwyn">
+          <div class="venue-text">
+            <h3><span lang="en">Balwyn Hill</span><span lang="zh">Balwyn Hill 博温高地</span></h3>
+            <p><span lang="en">Old money</span><span lang="zh">老钱暗局</span> · 500/1,000</p>
+          </div>
+          <img src="venues/balwyn.png" alt="" loading="lazy" />
+        </li>
+        <li class="venue v-toorak">
+          <div class="venue-text">
+            <h3><span lang="en">Toorak Estate</span><span lang="zh">Toorak 顶级庄园</span></h3>
+            <p><span lang="en">Top of the chain</span><span lang="zh">天花板决战</span> · 2,500/5,000</p>
+          </div>
+          <img src="venues/toorak.png" alt="" loading="lazy" />
+        </li>
+      </ul>
+    </section>
+
+    <!-- Features -->
+    <section class="section">
+      <div class="section-head">
+        <h2><span lang="en">Write the opponent, then play it</span><span lang="zh">先写对手，再和它打</span></h2>
+      </div>
+
+      <div class="feature">
+        <figure class="shot"><img src="images/strategy.png" width="1280" height="720" alt="The prompt editor with searchable poker variables and a street-by-street preview" loading="lazy" /></figure>
+        <div class="feature-text">
+          <h3><span lang="en">Edit the prompt. Preview every street.</span><span lang="zh">编辑提示词，逐街预览。</span></h3>
+          <p>
+            <span lang="en">Each opponent gets its own model, play style and prompt. Search for equity, position or pot odds and insert them as live values. Preview builds the exact request for preflop, flop, turn and river locally — no model call, no cost.</span>
+            <span lang="zh">每个对手都有自己的模型、风格和提示词。搜索胜率、位置、底池赔率等信息并插入为实时变量。预览会在本地为翻前、翻牌、转牌、河牌生成完整请求——不调用模型，不产生费用。</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="feature flip">
+        <figure class="shot"><img src="images/lobby.png" width="1280" height="720" alt="The lobby: bankroll, venue cards and the opponents at your table" loading="lazy" /></figure>
+        <div class="feature-text">
+          <h3><span lang="en">Pick your table.</span><span lang="zh">挑选你的牌桌。</span></h3>
+          <p>
+            <span lang="en">Play against JEV, Gemini, Claude, GPT, Grok, DeepSeek and Kimi through OpenRouter. Add or remove seats, swap models per opponent, and your bankroll and settings are saved in your browser.</span>
+            <span lang="zh">通过 OpenRouter 对战 JEV、Gemini、Claude、GPT、Grok、DeepSeek 和 Kimi。增减座位、为每个对手切换模型，资金和设置都保存在你的浏览器里。</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="feature">
+        <figure class="shot phone"><img src="images/gameplay-mobile.gif" width="390" height="844" alt="A hand played on a phone-sized screen" loading="lazy" /></figure>
+        <div class="feature-text">
+          <h3><span lang="en">Made for phones, too.</span><span lang="zh">手机上同样好用。</span></h3>
+          <p>
+            <span lang="en">A minimal table that works one-handed on mobile and spreads out on desktop. English and Chinese UI, with your own avatar and felt colour.</span>
+            <span lang="zh">极简牌桌，手机上单手可玩，桌面端自然展开。支持中英文界面，可自选头像与桌布颜色。</span>
+          </p>
+        </div>
+      </div>
+
+      <ul class="mini">
+        <li>
+          <h3><span lang="en">Extend the poker info</span><span lang="zh">扩展扑克变量</span></h3>
+          <p>
+            <span lang="en">Add formulas in JSON or register algorithm plugins. New variables appear in the editor automatically.</span>
+            <span lang="zh">用 JSON 写公式，或注册算法插件，新变量会自动出现在编辑器里。</span>
+          </p>
+        </li>
+        <li>
+          <h3><span lang="en">Agent-friendly</span><span lang="zh">适合交给 AI agent</span></h3>
+          <p>
+            <span lang="en">Hand the repo to your coding agent to set up, draft strategies, or add plugins — with checks it can run.</span>
+            <span lang="zh">把项目交给你的编程 agent：配置环境、撰写策略、增加插件，并附带可运行的检查。</span>
+          </p>
+        </li>
+        <li>
+          <h3><span lang="en">Honest about what it is</span><span lang="zh">实事求是</span></h3>
+          <p>
+            <span lang="en">An experimental playground — not a solved GTO engine or a controlled model benchmark.</span>
+            <span lang="zh">这是一个实验场——不是 GTO 求解器，也不是严格的模型评测。</span>
+          </p>
+        </li>
+      </ul>
+    </section>
+
+    <!-- Quickstart -->
+    <section class="section" id="start">
+      <div class="section-head">
+        <h2><span lang="en">Start in a minute</span><span lang="zh">一分钟上手</span></h2>
+        <p>
+          <span lang="en">Node.js 22+, npm, and an <a href="https://openrouter.ai/settings/keys">OpenRouter API key</a>.</span>
+          <span lang="zh">需要 Node.js 22+、npm，以及一个 <a href="https://openrouter.ai/settings/keys">OpenRouter API key</a>。</span>
+        </p>
+      </div>
+      <div class="terminal">
+        <button type="button" class="copy" data-copy-target="cmds">
+          <span lang="en">Copy</span><span lang="zh">复制</span>
+        </button>
+<pre id="cmds"><code>git clone https://github.com/SonghaiFan/frankie-poker.git
+cd frankie-poker
+npm ci
+cp .env.example .env.local   # set OPENROUTER_API_KEY
+npm run dev</code></pre>
+      </div>
+      <p class="note">
+        <span lang="en">Keep this setup local: the key is embedded in the browser bundle, so don't deploy a build that contains it.</span>
+        <span lang="zh">请只在本地使用：key 会被打包进浏览器代码，不要部署包含 key 的构建产物。</span>
+      </p>
+      <div class="links">
+        <a href="https://github.com/SonghaiFan/frankie-poker#readme">README</a>
+        <a href="https://github.com/SonghaiFan/frankie-poker/blob/main/docs/quickstart.zh-CN.md">中文上手指南</a>
+        <a href="https://github.com/SonghaiFan/frankie-poker/blob/main/docs/agent-guide.md"><span lang="en">Agent guide</span><span lang="zh">Agent 指南</span></a>
+        <a href="https://github.com/SonghaiFan/frankie-poker/blob/main/CONTRIBUTING.md"><span lang="en">Contributing</span><span lang="zh">参与贡献</span></a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p>
+      <span lang="en">UI/UX inspired by <a href="https://offsuit.app/">Offsuit</a>; not affiliated. AI brand icons from <a href="https://github.com/lobehub/lobe-icons">LobeHub Icons</a>. Brand marks belong to their owners.</span>
+      <span lang="zh">UI/UX 设计灵感来自 <a href="https://offsuit.app/">Offsuit</a>（与其无关联）。AI 品牌图标来自 <a href="https://github.com/lobehub/lobe-icons">LobeHub Icons</a>，品牌标识归各自所有者。</span>
+    </p>
+    <p><a href="https://github.com/SonghaiFan/frankie-poker/blob/main/LICENSE">MIT License</a> · <a href="https://github.com/SonghaiFan/frankie-poker/blob/main/THIRD_PARTY_NOTICES.md"><span lang="en">Third-party notices</span><span lang="zh">第三方声明</span></a></p>
+  </footer>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var buttons = document.querySelectorAll('[data-set-lang]');
+      function setLang(lang) {
+        root.setAttribute('data-lang', lang);
+        root.setAttribute('lang', lang === 'zh' ? 'zh-CN' : 'en');
+        buttons.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.setLang === lang)); });
+        try { localStorage.setItem('frankie-site-lang', lang); } catch (e) {}
+      }
+      var saved = null;
+      try { saved = localStorage.getItem('frankie-site-lang'); } catch (e) {}
+      setLang(saved || (/^zh/i.test(navigator.language || '') ? 'zh' : 'en'));
+      buttons.forEach(function (b) { b.addEventListener('click', function () { setLang(b.dataset.setLang); }); });
+
+      document.querySelectorAll('[data-copy-target]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var text = document.getElementById(btn.dataset.copyTarget).innerText;
+          if (!navigator.clipboard) return;
+          navigator.clipboard.writeText(text).then(function () {
+            btn.classList.add('done');
+            setTimeout(function () { btn.classList.remove('done'); }, 1400);
+          });
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

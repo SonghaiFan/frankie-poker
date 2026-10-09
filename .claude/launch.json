@@ -26,6 +26,18 @@
         "--strictPort"
       ],
       "port": 3011
+    },
+    {
+      "name": "site",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "4173",
+        "-d",
+        "_site"
+      ],
+      "port": 4173
     }
   ]
 }
