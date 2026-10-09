@@ -29,6 +29,7 @@
         <button type="button" data-set-lang="en" aria-pressed="true">EN</button>
         <button type="button" data-set-lang="zh" aria-pressed="false">中文</button>
       </div>
+      <a class="pill play" href="https://frankie-poker.vercel.app"><span lang="en">Play</span><span lang="zh">开玩</span></a>
       <a class="pill" href="https://github.com/SonghaiFan/frankie-poker">
         <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
         GitHub
@@ -48,16 +49,16 @@
         <span lang="zh">一个开源的无限注德州扑克实验场。挑选对手、为它们选择模型、编辑提示词，并在上桌前逐街预览模型能看到的信息。</span>
       </p>
       <div class="cta">
-        <a class="btn primary" href="#start">
-          <span lang="en">Run it locally</span><span lang="zh">本地运行</span>
+        <a class="btn primary" href="https://frankie-poker.vercel.app">
+          <span lang="en">Play in your browser</span><span lang="zh">在浏览器中开玩</span>
         </a>
-        <a class="btn" href="https://github.com/SonghaiFan/frankie-poker">
-          <span lang="en">View source</span><span lang="zh">查看源码</span>
+        <a class="btn" href="#start">
+          <span lang="en">Run it locally</span><span lang="zh">本地运行</span>
         </a>
       </div>
       <p class="fineprint">
-        <span lang="en">Virtual chips · Bring your own OpenRouter key · MIT licensed</span>
-        <span lang="zh">虚拟筹码 · 使用你自己的 OpenRouter key · MIT 开源</span>
+        <span lang="en">Virtual chips · Bring your own API key · Open source, MIT</span>
+        <span lang="zh">虚拟筹码 · 使用你自己的 API key · MIT 开源</span>
       </p>
 
       <figure class="shot hero-shot">
@@ -180,12 +181,25 @@
     <!-- Quickstart -->
     <section class="section" id="start">
       <div class="section-head">
-        <h2><span lang="en">Start in a minute</span><span lang="zh">一分钟上手</span></h2>
-        <p>
-          <span lang="en">Node.js 22+, npm, and an <a href="https://openrouter.ai/settings/keys">OpenRouter API key</a>.</span>
-          <span lang="zh">需要 Node.js 22+、npm，以及一个 <a href="https://openrouter.ai/settings/keys">OpenRouter API key</a>。</span>
-        </p>
+        <h2><span lang="en">Two ways to play</span><span lang="zh">两种玩法</span></h2>
       </div>
+      <ol class="ways">
+        <li>
+          <h3><span lang="en">Online</span><span lang="zh">在线</span></h3>
+          <p>
+            <span lang="en">Open <a href="https://frankie-poker.vercel.app">frankie-poker.vercel.app</a>, tap your avatar, open <b>AI connection</b> and paste your own <a href="https://openrouter.ai/settings/keys">OpenRouter key</a>. It stays in your browser; requests go straight to the provider.</span>
+            <span lang="zh">打开 <a href="https://frankie-poker.vercel.app">frankie-poker.vercel.app</a>，点击你的头像，在 <b>AI 连接</b> 中填入你自己的 <a href="https://openrouter.ai/settings/keys">OpenRouter key</a>。key 只保存在你的浏览器里，请求直接发往模型服务商。</span>
+          </p>
+          <a class="btn primary small" href="https://frankie-poker.vercel.app"><span lang="en">Open the app</span><span lang="zh">打开应用</span></a>
+        </li>
+        <li>
+          <h3><span lang="en">Locally</span><span lang="zh">本地</span></h3>
+          <p>
+            <span lang="en">Node.js 22+ and npm. Put your key in <code>.env.local</code> — only the local dev server reads it.</span>
+            <span lang="zh">需要 Node.js 22+ 和 npm。把 key 写进 <code>.env.local</code>——只有本地开发服务器会读取它。</span>
+          </p>
+        </li>
+      </ol>
       <div class="terminal">
         <button type="button" class="copy" data-copy-target="cmds">
           <span lang="en">Copy</span><span lang="zh">复制</span>
@@ -197,8 +211,8 @@ cp .env.example .env.local   # set OPENROUTER_API_KEY
 npm run dev</code></pre>
       </div>
       <p class="note">
-        <span lang="en">Keep this setup local: the key is embedded in the browser bundle, so don't deploy a build that contains it.</span>
-        <span lang="zh">请只在本地使用：key 会被打包进浏览器代码，不要部署包含 key 的构建产物。</span>
+        <span lang="en">Use a key with a spending limit. Chips are virtual; model calls use your own API balance.</span>
+        <span lang="zh">建议使用设置了消费上限的 key。筹码是虚拟的，模型调用消耗你自己的 API 余额。</span>
       </p>
       <div class="links">
         <a href="https://github.com/SonghaiFan/frankie-poker#readme">README</a>
