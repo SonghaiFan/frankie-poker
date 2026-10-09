@@ -5,6 +5,7 @@ import { FrankSignature } from "./FrankSignature";
 import { ProfileAvatar } from "./ProfileAvatar";
 import { PlayingCard } from "./PlayingCard";
 import { Suit } from "../types";
+import { loadPlayerName } from "../services/playerProfile";
 
 interface LoginPageProps {
   onOpenSettings: () => void;
@@ -15,7 +16,7 @@ interface LoginPageProps {
 // The front door: the name of the game, your name, and a way in.
 export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, isExiting, onOpenSettings }) => {
   const { t } = useLanguage();
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState(loadPlayerName);
   const name = username.trim();
 
   const enter = (e: React.FormEvent) => {

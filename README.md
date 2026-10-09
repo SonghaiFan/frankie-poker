@@ -62,7 +62,7 @@ For Vercel, deploy this Vite project with `npm run build` and output directory `
 
 Choose **Local Practice** to test without an API key: start with 1,000 free practice chips against simple rule-based opponents. Every decision runs on your device, including all four streets. Practice does not change your saved bankroll or opponent statistics. It ignores model prompts and provider settings; it is for testing the interface and game flow, not measuring poker strength.
 
-1. Enter a player name. Use the same name later to recover that name's saved bankroll and opponent settings in the same browser.
+1. Enter a player name. Your last name is remembered on the welcome screen; press Play to recover that name's saved bankroll and opponent settings. Avatar and felt selections are also remembered in this browser. You can edit the name to switch players. Browser data stays on this device and origin; clearing site data removes it.
 2. Open **Game settings** on the welcome screen, or click your profile in the lobby, to choose an avatar and felt color.
 3. Choose a venue you can afford. You start with 500 chips; Footscray's first table costs 200. Higher venues unlock with your bankroll.
 4. Expand **Your table** and click an opponent. All models available at this venue can be selected here. Use + / − to change the number of opponents.

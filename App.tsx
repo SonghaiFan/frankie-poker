@@ -10,6 +10,7 @@ import { GameConfig } from './types';
 import { DEFAULT_CONFIG } from './constants';
 import { STARTING_WEALTH, loadWealth, saveWealth } from './services/bankroll';
 import { getAIConnection } from './services/aiConnection';
+import { savePlayerName } from './services/playerProfile';
 import { isLocalGame, prepareLocalGame, PRACTICE_STACK } from './services/localPractice';
 
 type ViewState = 'LOGIN' | 'SETUP' | 'GAME';
@@ -47,6 +48,7 @@ function AppContent() {
     }, []);
 
     const handleLogin = (username: string) => {
+        savePlayerName(username);
         // Transition: Login -> Setup
         transitionTo('SETUP', () => {
             setUser(username);
