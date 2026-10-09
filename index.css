@@ -228,3 +228,11 @@
     padding-bottom: 0 !important;
   }
 }
+
+/* Short mobile browser viewports must not center the board over seat bets. */
+@media (max-width: 639px) {
+  .offsuit-board-region {
+    padding-top: 12px;
+    justify-content: safe center;
+  }
+}

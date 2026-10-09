@@ -856,7 +856,7 @@ export const PokerGame: React.FC<PokerGameProps> = ({ config, wealth, onWealthCh
                     />
                 </div>
 
-                <div className="flex-1 min-h-0 flex flex-col justify-center animate-zoom-fade-in" style={{ animationDelay: '0.3s' }}>
+                <div className="offsuit-board-region flex-1 min-h-0 flex flex-col justify-center animate-zoom-fade-in" style={{ animationDelay: '0.3s' }}>
                     <TableStratum
                         pot={gameState.pot}
                         board={gameState.board}
