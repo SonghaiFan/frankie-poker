@@ -28,14 +28,14 @@ export const defaultSeats = (count: number): SeatSettings[] =>
     []
   );
 
-const keyFor = (name: string) => `franks-holdem:seats:${name.trim().toLowerCase()}`;
+const keyFor = (name: string, collection: "seats" | "catalog") => `franks-holdem:${collection}:${name.trim().toLowerCase()}`;
 
-export const loadSeats = (name: string | null): SeatSettings[] | null => {
+export const loadSeats = (name: string | null, collection: "seats" | "catalog" = "seats"): SeatSettings[] | null => {
   if (!name) return null;
   try {
-    const raw = localStorage.getItem(keyFor(name));
+    const raw = localStorage.getItem(keyFor(name, collection));
     const parsed = raw ? JSON.parse(raw) : null;
-    if (!Array.isArray(parsed) || parsed.length === 0) return null;
+    if (!Array.isArray(parsed)) return null;
     return parsed
       .filter((s) => s && typeof s.id === "string" && typeof s.model === "string")
       .map((s) => ({
@@ -50,10 +50,10 @@ export const loadSeats = (name: string | null): SeatSettings[] | null => {
   }
 };
 
-export const saveSeats = (name: string | null, seats: SeatSettings[]) => {
+export const saveSeats = (name: string | null, seats: SeatSettings[], collection: "seats" | "catalog" = "seats") => {
   if (!name) return;
   try {
-    localStorage.setItem(keyFor(name), JSON.stringify(seats));
+    localStorage.setItem(keyFor(name, collection), JSON.stringify(seats));
   } catch {
     // Blocked storage: the table still works this visit, it just won't be remembered
   }
