@@ -8,8 +8,10 @@ import {
   Situation,
   buildSituation,
 } from "./pokerSituation";
+import { preflopDecision } from "./preflop";
 
 // The decision pipeline for an AI opponent:
+//   preflop, with a styled seat → the hand chart (services/preflop.ts) decides; stop
 //   buildSituation  → everything computable (equity, pot odds, legal actions)
 //   runModel        → a ModelJudgement (probabilities) from Jev or a chat model
 //   persona layer   → warp the distribution, sample, map to chips, write a log line
@@ -204,9 +206,16 @@ export const getAIDecision = async (
     reasoningHistory
   );
 
+  // A style with targets plays preflop from the chart: no model, no cost, no wait
+  if (phase === GamePhase.PRE_FLOP) {
+    const seatsDealt = allPlayers.filter((p) => p.status !== "ELIMINATED").length;
+    const chart = preflopDecision(situation, activePlayer, persona, tilt, currentHighBet, bigBlind, seatsDealt);
+    if (chart) return chart;
+  }
+
   try {
     if (!API_KEY) throw new Error("OPENROUTER_API_KEY is not set");
-    const trace = await runModel(situation, activePlayer.model ?? modelId, API_KEY);
+    const trace = await runModel(situation, activePlayer.model ?? modelId, API_KEY, activePlayer.prompt);
     return decideWithPersona(situation, trace.judgement, persona, tilt);
   } catch (error) {
     console.error("AI Error:", error);

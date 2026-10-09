@@ -1,15 +1,20 @@
+import { GameSettingsProvider, useGameSettings, feltStyle } from "./services/gameSettings";
+import { GameSettings } from "./components/GameSettings";
 import React, { useState, useCallback } from 'react';
-import { TextureOverlay } from './components/TextureOverlay';
 import { LoginPage } from './components/LoginPage';
 import { LandingPage } from './components/LandingPage';
 import { PokerGame } from './components/PokerGame';
+import { LanguageProvider } from './services/i18n';
+import { TextureOverlay } from './components/TextureOverlay';
 import { GameConfig } from './types';
 import { DEFAULT_CONFIG } from './constants';
 import { STARTING_WEALTH, loadWealth, saveWealth } from './services/bankroll';
 
 type ViewState = 'LOGIN' | 'SETUP' | 'GAME';
 
-function App() {
+function AppContent() {
+    const { settings } = useGameSettings();
+    const [settingsOpen, setSettingsOpen] = useState(false);
     const [view, setView] = useState<ViewState>('LOGIN');
     const [isExiting, setIsExiting] = useState(false);
     
@@ -65,13 +70,15 @@ function App() {
     };
 
     return (
-        <main className="w-full h-[100svh] flex flex-col bg-[radial-gradient(circle_at_center,#35654d_0%,#13251d_100%)] text-[#e0e0e0] font-sans overflow-hidden relative selection:bg-[#d4af37] selection:text-black">
+        <main style={feltStyle(settings.color)} className="w-full h-[100svh] flex flex-col felt-background text-[#e0e0e0] font-sans overflow-hidden relative selection:bg-[#d4af37] selection:text-black">
             <TextureOverlay />
+            {settingsOpen && <GameSettings onClose={() => setSettingsOpen(false)} />}
             
             {/* View Container */}
             <div className="relative w-full h-full z-10">
                 {view === 'LOGIN' && (
                     <LoginPage 
+                        onOpenSettings={() => setSettingsOpen(true)}
                         onLogin={handleLogin} 
                         isExiting={isExiting} 
                     />
@@ -79,6 +86,7 @@ function App() {
 
                 {view === 'SETUP' && (
                     <LandingPage 
+                        onOpenSettings={() => setSettingsOpen(true)}
                         onStartGame={handleStartGame} 
                         username={user} 
                         wealth={wealth}
@@ -97,6 +105,14 @@ function App() {
                 )}
             </div>
         </main>
+    );
+}
+
+function App() {
+    return (
+        <LanguageProvider>
+            <GameSettingsProvider><AppContent /></GameSettingsProvider>
+        </LanguageProvider>
     );
 }
 

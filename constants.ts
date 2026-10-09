@@ -7,6 +7,7 @@ import {
   GameConfig,
   Persona,
   AIModelOption,
+  OpponentSeat,
 } from "./types";
 
 export const INITIAL_STACK_HUMAN = 10000;
@@ -56,6 +57,8 @@ export const PERSONAS: Record<string, Persona> = {
     sizing: "standard",
     temperature: 0.7,
     tiltFactor: 1.2,
+    vpip: 0.22,
+    pfr: 0.18,
   },
   LAG: {
     id: "LAG",
@@ -67,17 +70,21 @@ export const PERSONAS: Record<string, Persona> = {
     sizing: "big",
     temperature: 1.0,
     tiltFactor: 1.4,
+    vpip: 0.32,
+    pfr: 0.26,
   },
   NIT: {
     id: "NIT",
     label: "NIT",
-    description: "The rock: folds almost everything, only shows up with premiums.",
-    aggression: 0.8,
+    description: "The rock: folds almost everything, and when it does play, mostly just calls.",
+    aggression: 0.6,
     looseness: 0.5,
     bluffFreq: 0.02,
     sizing: "standard",
     temperature: 0.5,
     tiltFactor: 1.1,
+    vpip: 0.12,
+    pfr: 0.04, // tight and passive: the bottom-left corner of the style map
   },
   STATION: {
     id: "STATION",
@@ -89,6 +96,8 @@ export const PERSONAS: Record<string, Persona> = {
     sizing: "small",
     temperature: 0.8,
     tiltFactor: 1.3,
+    vpip: 0.45,
+    pfr: 0.07,
   },
   MANIAC: {
     id: "MANIAC",
@@ -100,6 +109,8 @@ export const PERSONAS: Record<string, Persona> = {
     sizing: "big",
     temperature: 1.3,
     tiltFactor: 1.6,
+    vpip: 0.6,
+    pfr: 0.45,
   },
   FISH: {
     id: "FISH",
@@ -111,6 +122,8 @@ export const PERSONAS: Record<string, Persona> = {
     sizing: "small",
     temperature: 1.6,
     tiltFactor: 1.5,
+    vpip: 0.4,
+    pfr: 0.1,
   },
 };
 
@@ -250,10 +263,11 @@ export const initializeGame = (
   const aiPlayers: Player[] = [];
 
   // Create AI Players — named seats if given, else one per chosen brain, else
-  // opponentCount copies of the default. A person is just a name and a face;
-  // the model is the brain and there is no persona, so what you see is the
-  // model's own style.
-  const seats: { name: string; model: string }[] =
+  // opponentCount copies of the default. The model is the brain; a seat may
+  // add a strategy (a persona that warps the model's distribution) and a
+  // prompt (words the model reads before every decision). Without either,
+  // what you see is the model's own style.
+  const seats: OpponentSeat[] =
     config.opponents && config.opponents.length > 0
       ? config.opponents
       : (config.opponentModels && config.opponentModels.length > 0
@@ -284,6 +298,9 @@ export const initializeGame = (
       isActive: true,
       currentBet: 0,
       model: seats[i].model,
+      persona: seats[i].persona ?? PERSONAS[seats[i].strategy ?? ""],
+      styleKey: seats[i].styleKey,
+      prompt: seats[i].prompt?.trim() || undefined,
       tilt: 1,
       handStartChips: chips,
     });

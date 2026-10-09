@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+.felt-background {
+  --felt-surface-rgb: 31, 60, 45;
+  --felt-separator-rgb: 49, 89, 66;
+  --felt-base: #13251d;
+  --felt-gradient: radial-gradient(circle at center, #35654d 0%, #13251d 100%);
+  background-color: var(--felt-base);
+  background-image: var(--felt-gradient);
+  background-attachment: fixed;
+}
+
+/* Fade overflowing content into the same viewport-aligned felt as the page. */
+.felt-footer::before {
+  content: "";
+  position: fixed;
+  inset: auto 0 0;
+  height: calc(52px + 2rem + max(1.25rem, env(safe-area-inset-bottom)));
+  z-index: -1;
+  pointer-events: none;
+  background-color: var(--felt-base);
+  background-image: var(--felt-gradient);
+  background-attachment: fixed;
+  mask-image: linear-gradient(to bottom, transparent, black 45%);
+}

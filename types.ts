@@ -35,6 +35,21 @@ export interface Persona {
   sizing: "small" | "standard" | "big"; // Preferred bet sizing
   temperature: number; // Sampling temperature: low = consistent, high = erratic
   tiltFactor: number; // Aggression multiplier applied after losing a big pot
+  // Preflop targets, as shares of hands dealt. A style with these plays its
+  // preflop from the hand chart (services/preflop.ts) instead of asking a model.
+  vpip?: number; // how often it puts money in by choice
+  pfr?: number; // how often it raises
+}
+
+// Running HUD counts for one player (services/playerStats.ts)
+export interface PlayerStats {
+  hands: number;
+  vpipHands: number;
+  pfrHands: number;
+  aggressive: number; // postflop bets and raises
+  passive: number; // postflop calls and folds
+  vpipThisHand: boolean;
+  pfrThisHand: boolean;
 }
 
 export interface Player {
@@ -51,8 +66,11 @@ export interface Player {
   reasoningHistory?: string[]; // AI's internal thought process history
   persona?: Persona; // AI only
   model?: string; // AI only: per-player OpenRouter model override
+  prompt?: string; // AI only: replaces the default play instructions for this player (empty = default)
   tilt?: number; // AI only: current aggression multiplier from recent losses (1 = calm)
   handStartChips?: number; // AI only: stack at the start of the current hand, for tilt tracking
+  stats?: PlayerStats; // how they have actually played at this table
+  styleKey?: string; // AI only: which style these stats belong to (services/style.ts styleKeyOf)
 }
 
 export enum GamePhase {
@@ -91,6 +109,16 @@ export interface AIModelOption {
   pricePerM: { input: number; output: number }; // USD per million tokens, from OpenRouter
 }
 
+// One opponent as set up in the lobby.
+export interface OpponentSeat {
+  name: string;
+  model: string;
+  strategy?: string; // a PERSONAS key, "CUSTOM", or absent / "RAW" for the model's own judgement
+  prompt?: string;
+  persona?: Persona; // resolved in the lobby (a custom style is built from its point)
+  styleKey?: string; // which style the stats this seat earns are filed under
+}
+
 export interface GameConfig {
   playerName?: string; // Added for login flow
   startingStackHuman: number;
@@ -99,7 +127,7 @@ export interface GameConfig {
   opponentCount: number; // derived from opponentModels when that is set
   aiModel: string; // default OpenRouter model for any opponent without one of its own
   opponentModels?: string[]; // one seat per entry; each AI thinks with its own model
-  opponents?: { name: string; model: string }[]; // named seats; takes precedence over opponentModels
+  opponents?: OpponentSeat[]; // named seats; takes precedence over opponentModels
 }
 
 export interface GameState {
@@ -115,4 +143,5 @@ export interface GameState {
   winningHand: WinningHand | null;
   isRunningOut: boolean; // True if dealing cards automatically (All-In)
   handHistory: string[]; // Log of all actions in the current hand for AI Context
+  handNotes?: Record<number, string>; // a model's reasoning, keyed by the handHistory line it explains
 }

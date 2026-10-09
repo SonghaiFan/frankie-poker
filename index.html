@@ -5,8 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Frank's Hold'em</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Frankie Hold'em</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -14,7 +13,7 @@
         rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #0a0a0a;
+            --bg-dark: #000000;
             --card-base: #f4f4f4;
             --card-ink: #1a1a1a;
             --accent: #ff3e3e;
@@ -32,7 +31,7 @@
             padding: 0;
             background-color: var(--bg-dark);
             color: var(--text-main);
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
             overflow: hidden;
             -webkit-font-smoothing: antialiased;
             overscroll-behavior: none;
@@ -302,6 +301,115 @@
 
         @media (prefers-reduced-motion: reduce) {
             .pik-rail, .pik-chev { transition-duration: 1ms; }
+        }
+
+        /* ══ Table ═══════════════════════════════════════════════════
+           The table is black; the only colours on it are the cards,
+           the faces, and yellow for chips in front of a player. */
+
+        /* A face-down card: white, with black hatching inset from the edge. */
+        .card-back-hatch {
+            background: repeating-linear-gradient(135deg,
+                    #111 0 0.45em,
+                    #fafafa 0.45em 1.25em);
+        }
+
+        /* The one-time swipe hint: the cards hop up, as if about to leave. */
+        @keyframes swipe-nudge {
+            0%, 45%, 100% { transform: translateY(0); }
+            15% { transform: translateY(-18px); }
+            28% { transform: translateY(-3px); }
+        }
+
+        .swipe-nudge {
+            animation: swipe-nudge 2.4s cubic-bezier(0.33, 0.55, 0.2, 1) 0.8s infinite;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .swipe-nudge { animation: none; }
+        }
+
+        /* Sheets rise from the bottom over a fading backdrop. */
+        @keyframes sheet-up {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        /* On a desktop the opponent panel rises a little and settles instead. */
+        @keyframes panel-in {
+            from { opacity: 0; transform: translateY(16px) scale(0.985); }
+            to { opacity: 1; transform: none; }
+        }
+
+        /* The prompt editor: a field the prompt points at is a pill, not backticks */
+        .prompt-editor:empty::before {
+            content: attr(data-placeholder);
+            color: rgba(255, 255, 255, 0.3);
+            pointer-events: none;
+        }
+
+        .prompt-pill {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 6px;
+            margin: 0 1px;
+            padding: 1px 8px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.09);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+            font-family: 'Space Mono', ui-monospace, monospace;
+            font-size: 12.5px;
+            line-height: 1.5;
+            color: #fff;
+            cursor: pointer;
+            user-select: none;
+            white-space: nowrap;
+            transition: background-color 150ms, box-shadow 150ms;
+        }
+
+        .prompt-pill:hover {
+            background: rgba(255, 255, 255, 0.14);
+        }
+
+        .prompt-pill-value {
+            color: #f5e35b;
+            opacity: 0.85;
+            max-width: 22ch;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .prompt-pill-value:empty {
+            display: none;
+        }
+
+        .prompt-pill[data-state="absent"] {
+            background: transparent;
+            color: rgba(255, 255, 255, 0.5);
+            outline: 1px dashed rgba(255, 255, 255, 0.25);
+            outline-offset: -1px;
+            box-shadow: none;
+        }
+
+        .prompt-pill[data-state="unknown"] {
+            background: rgba(255, 90, 90, 0.14);
+            box-shadow: inset 0 0 0 1px rgba(255, 138, 138, 0.35);
+            color: #ff8a8a;
+        }
+
+        .prompt-pill[data-selected="true"] {
+            box-shadow: inset 0 0 0 1.5px #f5e35b;
+            background: rgba(245, 227, 91, 0.14);
+        }
+
+        @keyframes fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fade-out {
+            from { opacity: 1; }
+            to { opacity: 0; }
         }
 
         /* Custom Scrollbar */
