@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useLanguage } from "../services/i18n";
 import { LanguageToggle } from "./LanguageToggle";
 import { FrankSignature } from "./FrankSignature";
+import { ProfileAvatar } from "./ProfileAvatar";
 import { PlayingCard } from "./PlayingCard";
 import { Suit } from "../types";
 
@@ -13,7 +14,7 @@ interface LoginPageProps {
 
 // The front door: the name of the game, your name, and a way in.
 export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, isExiting, onOpenSettings }) => {
-  const { t, lang } = useLanguage();
+  const { t } = useLanguage();
   const [username, setUsername] = useState("");
   const name = username.trim();
 
@@ -51,7 +52,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, isExiting, onOpen
         style={{ paddingBottom: "max(1.25rem, env(safe-area-inset-bottom))" }}
       >
         <div className="h-14 px-5 flex items-center justify-end shrink-0">
-          <button type="button" onClick={onOpenSettings} className="mr-auto text-sm text-white/65 px-3 py-2 rounded-full bg-white/5">{lang === "zh" ? "游戏设置" : "Game settings"}</button>
           <LanguageToggle />
         </div>
 
@@ -66,6 +66,17 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, isExiting, onOpen
         </div>
 
         <div className="px-5 flex flex-col gap-3">
+          {/* Who you are: your face beside your name; tap it to change how you look */}
+          <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={onOpenSettings}
+            aria-label={t.profile.edit}
+            title={t.profile.edit}
+            className="shrink-0 w-[52px] h-[52px] rounded-full bg-[#1c1c1e] flex items-center justify-center hover:bg-[#2a2a2d] active:scale-95 transition-all cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/60"
+          >
+            <ProfileAvatar size={38} badge={16} />
+          </button>
           <input
             type="text"
             value={username}
@@ -76,8 +87,9 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, isExiting, onOpen
             autoComplete="nickname"
             spellCheck={false}
             maxLength={12}
-            className="w-full h-[52px] px-5 rounded-full bg-[#1c1c1e] text-[16px] text-white placeholder:text-white/35 outline-none border border-transparent focus:border-white/25 transition-colors"
+            className="flex-1 min-w-0 h-[52px] px-5 rounded-full bg-[#1c1c1e] text-[16px] text-white placeholder:text-white/35 outline-none border border-transparent focus:border-white/25 transition-colors"
           />
+          </div>
           <button
             type="submit"
             disabled={!name}

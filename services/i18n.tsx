@@ -15,6 +15,19 @@ export interface Translations {
     play: string;
   };
 
+  profile: {
+    title: string;
+    edit: string;
+    you: string;
+    subtitle: string;
+    avatar: string;
+    felt: string;
+    feltNames: [string, string, string, string, string];
+    custom: string;
+    saved: string;
+    done: string;
+  };
+
   setup: {
     title: string;
     unknown: string;
@@ -250,6 +263,19 @@ export const translations: Record<Language, Translations> = {
       title: "Frankie Poker",
       namePlaceholder: "Your name",
       play: "Play",
+    },
+
+    profile: {
+      title: "Your look",
+      edit: "Change avatar and table colour",
+      you: "You",
+      subtitle: "Avatar and table colour",
+      avatar: "Avatar",
+      felt: "Table colour",
+      feltNames: ["Forest", "Ocean", "Plum", "Walnut", "Charcoal"],
+      custom: "Custom",
+      saved: "Changes apply right away and are saved on this device.",
+      done: "Done",
     },
 
     setup: {
@@ -509,6 +535,19 @@ export const translations: Record<Language, Translations> = {
       title: "Frankie Poker",
       namePlaceholder: "你的名字",
       play: "开始",
+    },
+
+    profile: {
+      title: "个人形象",
+      edit: "更换头像和桌布颜色",
+      you: "你",
+      subtitle: "头像与桌布颜色",
+      avatar: "头像",
+      felt: "桌布颜色",
+      feltNames: ["森林", "深海", "暮紫", "暖棕", "炭黑"],
+      custom: "自选",
+      saved: "修改即时生效，并保存在此设备。",
+      done: "完成",
     },
 
     setup: {

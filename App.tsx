@@ -15,6 +15,7 @@ type ViewState = 'LOGIN' | 'SETUP' | 'GAME';
 function AppContent() {
     const { settings } = useGameSettings();
     const [settingsOpen, setSettingsOpen] = useState(false);
+    const closeSettings = useCallback(() => setSettingsOpen(false), []);
     const [view, setView] = useState<ViewState>('LOGIN');
     const [isExiting, setIsExiting] = useState(false);
     
@@ -72,7 +73,7 @@ function AppContent() {
     return (
         <main style={feltStyle(settings.color)} className="w-full h-[100svh] flex flex-col felt-background text-[#e0e0e0] font-sans overflow-hidden relative selection:bg-[#d4af37] selection:text-black">
             <TextureOverlay />
-            {settingsOpen && <GameSettings onClose={() => setSettingsOpen(false)} />}
+            {settingsOpen && <GameSettings name={view === "LOGIN" ? undefined : user ?? undefined} onClose={closeSettings} />}
             
             {/* View Container */}
             <div className="relative w-full h-full z-10">

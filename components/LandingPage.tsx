@@ -11,6 +11,7 @@ import { useLanguage } from "../services/i18n";
 import { LanguageToggle } from "./LanguageToggle";
 import { OpponentSheet } from "./OpponentSheet";
 import { SeatSnake } from "./SeatSnake";
+import { ProfileAvatar } from "./ProfileAvatar";
 import { Avatar } from "./Avatar";
 import { NATURAL, SeatSettings, defaultSeat, defaultSeats, loadSeats, promptForModel, saveSeats } from "../services/seats";
 import { CUSTOM, personaFor, styleKeyOf } from "../services/style";
@@ -135,7 +136,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   onTopUp,
   isExiting,
 }) => {
-  const { t, lang } = useLanguage();
+  const { t } = useLanguage();
   const [venueIndex, setVenueIndex] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
 
@@ -244,13 +245,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       <div className="w-full max-w-[480px] sm:max-w-[720px] md:max-w-[880px] lg:max-w-[1080px] mx-auto min-h-full flex flex-col">
         {/* You, and the language */}
         <div className="h-14 px-5 flex items-center justify-between shrink-0">
-          <button type="button" onClick={onOpenSettings} aria-label={lang === "zh" ? "游戏设置" : "Game settings"} className="flex items-center gap-2 h-9 pl-1 pr-3.5 rounded-full bg-[#1c1c1e] min-w-0 cursor-pointer">
-            <Avatar isHuman alt="" className="w-7 h-7 object-contain" />
+          <button
+            type="button"
+            onClick={onOpenSettings}
+            aria-label={t.profile.edit}
+            title={t.profile.edit}
+            className="flex items-center gap-2 h-9 pl-1 pr-3.5 rounded-full bg-[#1c1c1e] hover:bg-[#2a2a2d] min-w-0 active:scale-[0.97] transition-all cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/60"
+          >
+            <ProfileAvatar size={28} badge={13} />
             <span className="text-[14px] text-white truncate">{username || t.setup.unknown}</span>
-            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-white/45">
-              <path d="m9 3-.6 2.3-2 .9-2.2-.7-3 5.2 1.7 1.6v2.3l-1.7 1.6 3 5.2 2.2-.7 2 .9L9 24h6l.6-2.4 2-.9 2.2.7 3-5.2-1.7-1.6v-2.3l1.7-1.6-3-5.2-2.2.7-2-.9L15 3z" transform="translate(1 0) scale(.9)" />
-              <circle cx="12" cy="12" r="3" />
-            </svg>
           </button>
           <LanguageToggle />
         </div>
