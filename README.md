@@ -8,16 +8,11 @@ An open-source No-Limit Texas Hold'em playground for people who want to play aga
 
 ![Choose a venue and configure your opponents](docs/images/lobby.png)
 
-<details>
-<summary>Watch a hand on desktop and mobile</summary>
-
 Real gameplay against JEV, from player actions through showdown. The mobile recording uses a 390 × 844 browser viewport.
 
-![Desktop gameplay](docs/images/gameplay-desktop.gif)
-
-<img src="docs/images/gameplay-mobile.gif" alt="Mobile gameplay" width="390" />
-
-</details>
+| Desktop gameplay | Mobile gameplay |
+| --- | --- |
+| <img src="docs/images/gameplay-desktop.gif" alt="Desktop gameplay" width="100%" /> | <img src="docs/images/gameplay-mobile.gif" alt="Mobile gameplay" width="100%" /> |
 
 ## What you can do
 
