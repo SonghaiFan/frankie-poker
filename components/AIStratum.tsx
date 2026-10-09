@@ -198,7 +198,7 @@ export const AIStratum: React.FC<AIStratumProps> = ({
                             className={`flex flex-col items-center select-none [-webkit-touch-callout:none] ${canPeek ? "cursor-pointer" : ""}`}
                         >
                             {/* A caret over whoever is to act */}
-                            <div className="h-6 flex items-center justify-center">
+                            <div className="h-2.5 sm:h-6 flex items-center justify-center">
                                 {isThinking && (
                                     <svg width="12" height="8" viewBox="0 0 12 8" className="text-white animate-in fade-in duration-200">
                                         <path d="M1.5 1h9L6 7z" fill="currentColor" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />

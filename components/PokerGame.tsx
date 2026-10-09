@@ -831,8 +831,8 @@ export const PokerGame: React.FC<PokerGameProps> = ({ config, wealth, onWealthCh
                     />
                 </div>
             )}
-            <div className="h-full w-full max-w-[480px] min-w-0 flex flex-col">
-                <div className="shrink-0 h-14 flex items-center px-3">
+            <div className="h-full w-full max-w-[480px] min-w-0 flex flex-col overflow-y-auto sm:overflow-visible">
+                <div className="shrink-0 h-12 sm:h-14 flex items-center px-3">
                     <button
                         type="button"
                         onClick={() => onExit(humanPlayer.chips)}

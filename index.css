@@ -233,6 +233,9 @@
 @media (max-width: 639px) {
   .offsuit-board-region {
     padding-top: 12px;
+    padding-bottom: 8px;
+    min-height: min-content;
+    flex-shrink: 0;
     justify-content: safe center;
   }
 }
