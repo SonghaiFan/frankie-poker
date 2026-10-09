@@ -1,6 +1,7 @@
 import React from "react";
 import { Card, GamePhase, WinningHand } from "../types";
 import { PlayingCard } from "./PlayingCard";
+import { ChipStack } from "./ChipStack";
 import { AnimatedCounter } from "./AnimatedCounter";
 import { useLanguage } from "../services/i18n";
 
@@ -24,10 +25,10 @@ export const TableStratum: React.FC<TableStratumProps> = ({
   const decided = !!winningHand && winningHand.cardIds.length > 0;
 
   return (
-    <section className="w-full px-5">
+    <section className="relative w-full px-5">
       {/* The board: five cards edge to edge, face down until dealt. Each slot
           is a size container, so a card's em is a tenth of its slot's width. */}
-      <div className="flex">
+      <div className="relative flex">
         {[0, 1, 2, 3, 4].map((index) => {
           const card = board[index];
           const isWinningCard = !!card && !!winningHand?.cardIds.includes(card.id);
@@ -35,7 +36,7 @@ export const TableStratum: React.FC<TableStratumProps> = ({
             <div
               key={index}
               className={`flex-1 min-w-0 [container-type:inline-size] ${index > 0 ? "-ml-2" : ""}`}
-              style={{ zIndex: index }}
+              style={{ zIndex: isWinningCard ? 10 + index : index }}
             >
               <PlayingCard
                 card={card}
@@ -49,6 +50,9 @@ export const TableStratum: React.FC<TableStratumProps> = ({
             </div>
           );
         })}
+        <div className="absolute bottom-0 inset-x-0 h-14 z-20 opacity-80" aria-hidden="true">
+          <ChipStack amount={pot} chipRadius={9} />
+        </div>
       </div>
 
       {/* The winning hand on the left, the pot on the right */}

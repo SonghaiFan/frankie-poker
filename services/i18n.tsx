@@ -46,7 +46,7 @@ export interface Translations {
     bankroll: string;
     stakes: string;
     yourTable: string;
-    holdToEdit: string;
+    tapToEdit: string;
     tapToOpen: string;
     sitDown: (buyIn: number) => string;
     venueLine: (buyIn: number, small: number, big: number) => string;
@@ -85,6 +85,8 @@ export interface Translations {
     notThisStreet: string;
     childField: string;
     valueHere: string;
+    editMode: string;
+    previewMode: string;
     showValues: string;
     typeBacktick: string;
     previewTitle: string;
@@ -272,7 +274,7 @@ export const translations: Record<Language, Translations> = {
       bankroll: "Bankroll",
       stakes: "Stakes",
       yourTable: "Your table",
-      holdToEdit: "Press and hold an opponent to change how they play",
+      tapToEdit: "Click or tap an opponent to change how they play",
       tapToOpen: "Tap the faces to see who you're playing",
       sitDown: (buyIn) => `Sit down · ${buyIn.toLocaleString()} buy-in`,
       venueLine: (buyIn, small, big) =>
@@ -299,6 +301,8 @@ export const translations: Record<Language, Translations> = {
       notThisStreet: "not on this street",
       childField: "A key inside each entry of a list",
       valueHere: "In this spot",
+      editMode: "Edit",
+      previewMode: "Preview",
       showValues: "Show values",
       typeBacktick: "Type ` to add a field",
       previewTitle: "What the model reads",
@@ -519,7 +523,7 @@ export const translations: Record<Language, Translations> = {
       bankroll: "可用资金",
       stakes: "盲注级别",
       yourTable: "你的牌桌",
-      holdToEdit: "长按对手，调整他们的打法",
+      tapToEdit: "点击对手，调整他们的打法",
       tapToOpen: "点开头像，看看你的对手",
       sitDown: (buyIn) => `入座 · 买入 ${buyIn.toLocaleString()}`,
       venueLine: (buyIn, small, big) =>
@@ -546,6 +550,8 @@ export const translations: Record<Language, Translations> = {
       notThisStreet: "本轮没有",
       childField: "列表中每一项里的字段",
       valueHere: "此刻的值",
+      editMode: "编辑",
+      previewMode: "预览",
       showValues: "显示取值",
       typeBacktick: "输入 ` 插入字段",
       previewTitle: "模型读到的内容",

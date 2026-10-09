@@ -708,7 +708,7 @@ export const PokerGame: React.FC<PokerGameProps> = ({ config, wealth, onWealthCh
 
     return (
         <div
-            className="h-full w-full bg-black overflow-hidden relative"
+            className="h-full w-full bg-transparent overflow-hidden relative"
             style={{
                 paddingTop: 'env(safe-area-inset-top)',
                 paddingBottom: 'max(1.25rem, env(safe-area-inset-bottom))',

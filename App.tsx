@@ -3,6 +3,7 @@ import { LoginPage } from './components/LoginPage';
 import { LandingPage } from './components/LandingPage';
 import { PokerGame } from './components/PokerGame';
 import { LanguageProvider } from './services/i18n';
+import { TextureOverlay } from './components/TextureOverlay';
 import { GameConfig } from './types';
 import { DEFAULT_CONFIG } from './constants';
 import { STARTING_WEALTH, loadWealth, saveWealth } from './services/bankroll';
@@ -65,7 +66,8 @@ function AppContent() {
     };
 
     return (
-        <main className="w-full h-[100svh] flex flex-col bg-black text-[#e0e0e0] font-sans overflow-hidden relative selection:bg-[#d4af37] selection:text-black">
+        <main className="w-full h-[100svh] flex flex-col felt-background text-[#e0e0e0] font-sans overflow-hidden relative selection:bg-[#d4af37] selection:text-black">
+            <TextureOverlay />
             
             {/* View Container */}
             <div className="relative w-full h-full z-10">

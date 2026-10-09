@@ -146,7 +146,8 @@ export const PlayingCard: React.FC<PlayingCardProps> = ({
                             transform: `
                                 rotateX(${dynamicStyle.rotateX}deg) 
                                 rotateY(${dynamicStyle.rotateY}deg) 
-                                scale(${dynamicStyle.scale})
+                                translateY(${isWinning && !hidden ? "-0.45em" : "0"})
+                                scale(${isWinning && !hidden ? Math.max(1.03, dynamicStyle.scale) : dynamicStyle.scale})
                             `,
                             transition: isWinning
                                 ? "transform 0.4s ease-out"

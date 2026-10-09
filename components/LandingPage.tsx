@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AI_MODELS, DEFAULT_CONFIG, modelCostPerM } from "../constants";
 import { STARTING_WEALTH } from "../services/bankroll";
 import { GameConfig } from "../types";
@@ -91,7 +91,6 @@ const VENUES: GameVenue[] = [
 
 const MIN_OPPONENTS = 1;
 const MAX_OPPONENTS = 9;
-const HOLD_MS = 450; // how long a press must last to open an opponent
 
 const affordable = (venue: GameVenue, wealth: number) => venue.buyIn <= wealth;
 
@@ -100,59 +99,6 @@ const menuFor = (venue: GameVenue) =>
   AI_MODELS.filter((m) => modelCostPerM(m) <= venue.budgetPerM).sort(
     (a, b) => modelCostPerM(a) - modelCostPerM(b)
   );
-
-// Press and hold: a timer that a release, a scroll or a drift of the finger cancels.
-// Right-click (and the long-press context menu on Android) opens at once.
-const useHold = (onHold: (id: string) => void) => {
-  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  const origin = useRef<{ x: number; y: number } | null>(null);
-  const [pressing, setPressing] = useState<string | null>(null);
-
-  const cancel = useCallback(() => {
-    clearTimeout(timer.current);
-    origin.current = null;
-    setPressing(null);
-  }, []);
-
-  const fire = useCallback(
-    (id: string) => {
-      cancel();
-      navigator.vibrate?.(10);
-      onHold(id);
-    },
-    [cancel, onHold]
-  );
-
-  const bind = (id: string) => ({
-    onPointerDown: (e: React.PointerEvent) => {
-      if (e.pointerType === "mouse" && e.button !== 0) return;
-      origin.current = { x: e.clientX, y: e.clientY };
-      setPressing(id);
-      clearTimeout(timer.current);
-      timer.current = setTimeout(() => fire(id), HOLD_MS);
-    },
-    onPointerMove: (e: React.PointerEvent) => {
-      const o = origin.current;
-      if (o && Math.hypot(e.clientX - o.x, e.clientY - o.y) > 8) cancel();
-    },
-    onPointerUp: cancel,
-    onPointerLeave: cancel,
-    onPointerCancel: cancel,
-    onContextMenu: (e: React.MouseEvent) => {
-      e.preventDefault();
-      fire(id);
-    },
-    onKeyDown: (e: React.KeyboardEvent) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        fire(id);
-      }
-    },
-  });
-
-  useEffect(() => cancel, [cancel]);
-  return { bind, pressing };
-};
 
 const ChevronDown = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -194,7 +140,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   const [editing, setEditing] = useState<string | null>(null);
   // How each seat has played at this player's tables, per style (written by the game after every hand)
   const [record] = useState(() => loadSeatStats(username));
-  const { bind, pressing } = useHold(setEditing);
+  const bind = (id: string): React.ButtonHTMLAttributes<HTMLButtonElement> => ({
+    onClick: () => setEditing(id),
+    onContextMenu: (e) => {
+      e.preventDefault();
+      setEditing(id);
+    },
+  });
   const editingIndex = seats.findIndex((s) => s.id === editing);
 
   const updateSeat = (next: SeatSettings) =>
@@ -208,6 +160,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   // --- Venue carousel: cards snap to the left edge; the one there is the one you pick ---
   const scrollToVenue = (i: number) => {
     const c = carouselRef.current;
+    if (c && c.clientWidth === 0) {
+      setVenueIndex(i);
+      return;
+    }
     const card = c?.children[i] as HTMLElement | undefined;
     if (!c || !card) return;
     c.scrollTo({ left: card.offsetLeft - 20, behavior: "smooth" });
@@ -215,7 +171,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
   const onCarouselScroll = () => {
     const c = carouselRef.current;
-    if (!c) return;
+    if (!c || c.clientWidth === 0) return;
     let nearest = 0;
     let best = Infinity;
     Array.from(c.children).forEach((el, i) => {
@@ -264,13 +220,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   return (
     <div
       className={`
-        w-full h-full overflow-y-auto no-scrollbar bg-black
+        w-full h-full overflow-y-auto no-scrollbar bg-transparent
         transition-all duration-700 ease-[cubic-bezier(0.19,1,0.22,1)]
-        ${isExiting ? "-translate-y-6 opacity-0 blur-sm" : "translate-y-0 opacity-100 blur-0"}
+        ${isExiting ? "-translate-y-6 opacity-0 blur-sm" : "opacity-100"}
       `}
       style={{ paddingTop: "env(safe-area-inset-top)" }}
     >
-      <div className="w-full max-w-[480px] lg:max-w-[1080px] mx-auto min-h-full flex flex-col">
+      <div className="w-full max-w-[480px] sm:max-w-[720px] md:max-w-[880px] lg:max-w-[1080px] mx-auto min-h-full flex flex-col">
         {/* You, and the language */}
         <div className="h-14 px-5 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2 h-9 pl-1 pr-3.5 rounded-full bg-[#1c1c1e] min-w-0">
@@ -281,11 +237,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         </div>
 
         {/* One column on a phone; on a desktop, where you play on the left and who with on the right */}
-        <div className="flex-1 flex flex-col lg:grid lg:grid-cols-[minmax(0,1fr)_440px] lg:gap-8 lg:items-start">
+        <div className="flex-1 flex flex-col lg:grid lg:grid-cols-[minmax(0,1.2fr)_minmax(320px,1fr)] lg:gap-5 xl:gap-8 lg:items-start">
         <div className="lg:min-w-0">
         {/* Bankroll */}
-        <div className="px-5 pt-8 pb-9">
-          <div className="text-[72px] font-extralight leading-none tracking-tight text-white tabular-nums">
+        <div className="px-5 pt-6 pb-7 lg:pt-8 lg:pb-9">
+          <div className="text-[60px] sm:text-[64px] xl:text-[72px] font-extralight leading-none tracking-tight text-white tabular-nums">
             {wealth.toLocaleString()}
           </div>
           <div className="mt-3 text-[15px] text-white/45">{t.setup.bankroll}</div>
@@ -308,7 +264,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <div
           ref={carouselRef}
           onScroll={onCarouselScroll}
-          className="relative flex lg:hidden gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory scroll-px-5 px-5 shrink-0"
+          className="relative flex sm:hidden gap-3 overflow-x-auto no-scrollbar snap-x snap-mandatory scroll-px-5 px-5 shrink-0"
         >
           {VENUES.map((v, i) => {
             const open = affordable(v, wealth);
@@ -345,8 +301,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           <div className="shrink-0 w-[calc(16%-32px)]" aria-hidden />
         </div>
 
-        {/* Desktop: every venue at once, with what each one is */}
-        <div className="hidden lg:grid grid-cols-2 xl:grid-cols-3 gap-3 px-5">
+        {/* Tablet and desktop: venue grids expand from two to three columns. */}
+        <div className="hidden sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-3 px-5">
           {VENUES.map((v, i) => {
             const open = affordable(v, wealth);
             const on = i === venueIndex;
@@ -360,7 +316,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 }}
                 aria-pressed={on}
                 className={`
-                  relative h-[168px] rounded-[28px] p-5 text-left flex flex-col justify-between
+                  relative min-w-0 h-[168px] rounded-[28px] p-4 xl:p-5 text-left flex flex-col justify-between
                   bg-gradient-to-br ${v.bgClass} text-black select-none cursor-pointer
                   transition-[opacity,transform,box-shadow] duration-300
                   ${on ? "opacity-100 ring-2 ring-white ring-offset-4 ring-offset-black" : "opacity-55 hover:opacity-80"}
@@ -375,7 +331,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   )}
                 </div>
                 <div className="min-w-0">
-                  <div className="text-[19px] leading-tight tracking-tight truncate">{venueName(v)}</div>
+                  <div className="text-[17px] xl:text-[19px] leading-tight tracking-tight truncate">{venueName(v)}</div>
                   <div className="mt-0.5 text-[13px] text-black/55 truncate">{t.venues[v.id]?.desc ?? v.desc}</div>
                   <div className="text-[13px] text-black/55 truncate">{t.setup.venueLine(v.buyIn, v.blindBig / 2, v.blindBig)}</div>
                 </div>
@@ -385,7 +341,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         </div>
 
         {/* Desktop: what the chosen venue serves */}
-        <div className="hidden lg:block px-5 pt-8 pb-8">
+        <div className="hidden sm:block px-5 pt-6 pb-4 lg:pt-8 lg:pb-8">
           <div className="flex items-baseline justify-between gap-4">
             <h3 className="text-[15px] text-white/45">{t.desk.venueMenu}</h3>
             <span className="text-[13px] text-white/35">
@@ -445,7 +401,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             </button>
           </div>
         </div>
-        <p className="px-5 mt-1 text-[14px] text-white/35">{unfolded ? t.setup.holdToEdit : t.setup.tapToOpen}</p>
+        <p className="px-5 mt-1 text-[14px] text-white/35">{unfolded ? t.setup.tapToEdit : t.setup.tapToOpen}</p>
 
         <SeatSnake
           rows={seats.map((seat, i) => ({
@@ -464,12 +420,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           unfoldLabel={t.setup.tapToOpen}
           markTitle={t.seat.customPrompt}
           rowProps={bind}
-          pressing={pressing}
         />
 
         {/* Sit down */}
         <div
-          className="sticky bottom-0 z-10 mt-auto px-5 pt-8 bg-gradient-to-t from-black via-black to-transparent"
+          className="felt-footer isolate sticky bottom-0 z-10 mt-auto px-5 pt-8"
           style={{ paddingBottom: "max(1.25rem, env(safe-area-inset-bottom))" }}
         >
           {canSit ? (

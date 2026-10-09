@@ -37,7 +37,7 @@ const Chevron = () => (
   </svg>
 );
 
-// A desktop has room to show the prompt and what it turns into side by side
+// Desktop settings sit beside one shared prompt workspace.
 const WIDE = "(min-width: 1024px)";
 const useWide = () => {
   const [wide, setWide] = useState(() => typeof window !== "undefined" && window.matchMedia(WIDE).matches);
@@ -50,8 +50,7 @@ const useWide = () => {
   return wide;
 };
 
-// One opponent's settings: a sheet from the bottom on a phone, a three-pane
-// prompt workbench on a desktop (the player · the prompt · what the model reads). Every change applies as
+// One opponent's settings with a shared edit/preview workspace. Every change applies as
 // it is made; Done only closes.
 export const OpponentSheet: React.FC<OpponentSheetProps> = ({ seat, menu, model, onChange, onClose, record = {} }) => {
   const { t } = useLanguage();
@@ -123,8 +122,7 @@ export const OpponentSheet: React.FC<OpponentSheetProps> = ({ seat, menu, model,
     return () => clearTimeout(timer);
   }, [seat.id]);
   const [picked, setPicked] = useState<string | null>(null);
-  const [showValues, setShowValues] = useState(false);
-  const [previewOpen, setPreviewOpen] = useState(false);
+  const [promptMode, setPromptMode] = useState<"edit" | "preview">("edit");
   const spot = sampleSituation(seat.id, street).state as Record<string, unknown>;
   const valueOf = (name: string) => valueAt(spot, name);
   const stateOf = (name: string): VarState =>
@@ -226,6 +224,22 @@ export const OpponentSheet: React.FC<OpponentSheetProps> = ({ seat, menu, model,
     </section>
   );
 
+  const variables = <PromptVariables used={refs.used} onInsert={insertField} valueOf={valueOf} />;
+
+  const preview = (
+    <PromptPreview
+      name={seat.id}
+      street={street}
+      onStreet={setStreet}
+      modelId={model}
+      prompt={seat.prompt}
+      draft={promptText}
+      selected={picked}
+      onSelect={setPicked}
+      chartPreflop={!natural}
+    />
+  );
+
   const promptSection = (
     <section>
       <div className="flex flex-wrap items-center justify-between gap-3 mb-2 min-h-7">
@@ -236,18 +250,19 @@ export const OpponentSheet: React.FC<OpponentSheetProps> = ({ seat, menu, model,
           </span>
         </h3>
         <div className="flex items-center gap-1.5">
-          <button
-            type="button"
-            role="switch"
-            aria-checked={showValues}
-            onClick={() => setShowValues((v) => !v)}
-            className={`h-7 px-3 rounded-full text-[13px] transition-colors cursor-pointer ${
-              showValues ? "bg-[#f5e35b]/15 text-[#f5e35b]" : "bg-white/[0.08] text-white/70 hover:bg-white/[0.14]"
-            }`}
-          >
-            {t.seat.showValues}
-            {showValues && <span className="text-[#f5e35b]/60"> · {t.desk.phases[street]}</span>}
-          </button>
+          <div className="flex rounded-full bg-black/35 p-1" role="group" aria-label={t.seat.prompt}>
+            {(["edit", "preview"] as const).map((mode) => (
+              <button
+                key={mode}
+                type="button"
+                aria-pressed={promptMode === mode}
+                onClick={() => setPromptMode(mode)}
+                className={`h-8 px-4 rounded-full text-[14px] transition-colors cursor-pointer ${promptMode === mode ? "bg-white text-black" : "text-white/60 hover:text-white"}`}
+              >
+                {mode === "edit" ? t.seat.editMode : t.seat.previewMode}
+              </button>
+            ))}
+          </div>
           {edited && (
             <button
               type="button"
@@ -259,6 +274,7 @@ export const OpponentSheet: React.FC<OpponentSheetProps> = ({ seat, menu, model,
           )}
         </div>
       </div>
+      <div hidden={promptMode !== "edit"}>
       {wide && <p className="-mt-1 mb-3 text-[13px] leading-snug text-white/40">{t.seat.promptNote}</p>}
       <PromptEditor
         ref={editor}
@@ -267,7 +283,7 @@ export const OpponentSheet: React.FC<OpponentSheetProps> = ({ seat, menu, model,
         limit={PROMPT_LIMIT}
         stateOf={stateOf}
         valueOf={valueOf}
-        showValues={showValues}
+        showValues={false}
         selected={picked}
         onSelect={setPicked}
         edited={edited}
@@ -285,23 +301,15 @@ export const OpponentSheet: React.FC<OpponentSheetProps> = ({ seat, menu, model,
           ))}
         </p>
       )}
+      <div className="mt-5">{variables}</div>
+      </div>
+      {promptMode === "preview" && (
+        <div>
+          <p className="mb-4 text-[13px] leading-snug text-white/45">{t.seat.previewNote}</p>
+          {preview}
+        </div>
+      )}
     </section>
-  );
-
-  const variables = <PromptVariables used={refs.used} onInsert={insertField} valueOf={valueOf} />;
-
-  const preview = (
-    <PromptPreview
-      name={seat.id}
-      street={street}
-      onStreet={setStreet}
-      modelId={model}
-      prompt={seat.prompt}
-      draft={promptText}
-      selected={picked}
-      onSelect={setPicked}
-      chartPreflop={!natural}
-    />
   );
 
   const subtitle = [currentModel?.label, natural ? "" : styleName].filter(Boolean).join(" · ");
@@ -312,7 +320,7 @@ export const OpponentSheet: React.FC<OpponentSheetProps> = ({ seat, menu, model,
       <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label={seat.id}>
         <div className="absolute inset-0 bg-black/70 backdrop-blur-sm animate-[fade-in_200ms_ease-out]" onClick={onClose} />
 
-        <div className="absolute inset-5 xl:inset-8 mx-auto max-w-[1480px] flex flex-col rounded-[28px] bg-[#1c1c1e] border border-white/[0.06] shadow-2xl shadow-black/60 overflow-hidden animate-[panel-in_360ms_cubic-bezier(0.19,1,0.22,1)]">
+        <div className="absolute inset-5 xl:inset-8 mx-auto max-w-[1080px] flex flex-col rounded-[28px] bg-[#1c1c1e] border border-white/[0.06] shadow-2xl shadow-black/60 overflow-hidden animate-[panel-in_360ms_cubic-bezier(0.19,1,0.22,1)]">
           <header className="shrink-0 flex items-center gap-4 px-6 h-[76px] border-b border-white/[0.06]">
             <Avatar name={seat.id} alt="" draggable={false} className="w-11 h-11 object-contain" />
             <div className="min-w-0">
@@ -328,29 +336,18 @@ export const OpponentSheet: React.FC<OpponentSheetProps> = ({ seat, menu, model,
             </button>
           </header>
 
-          <div className="flex-1 min-h-0 grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] 2xl:grid-cols-[300px_minmax(0,1.1fr)_minmax(0,1fr)]">
+          <div className="flex-1 min-h-0 grid grid-cols-[280px_minmax(0,1fr)]">
             {/* The player */}
-            <aside className="hidden 2xl:block min-h-0 overflow-y-auto no-scrollbar px-6 py-6 space-y-7 border-r border-white/[0.06]">
+            <aside className="min-h-0 overflow-y-auto no-scrollbar px-6 py-6 space-y-7 border-r border-white/[0.06]">
               {modelSection}
               {styleSection}
             </aside>
 
             {/* The prompt, and the fields it can point at */}
             <main className="min-h-0 overflow-y-auto no-scrollbar px-6 py-6 space-y-5">
-              <div className="2xl:hidden space-y-5">
-                {modelSection}
-                {styleSection}
-              </div>
               {promptSection}
-              {variables}
             </main>
 
-            {/* What the model reads */}
-            <section className="min-h-0 overflow-y-auto no-scrollbar px-6 py-6 bg-black/20 border-l border-white/[0.06]">
-              <h3 className="text-[15px] text-white">{t.seat.previewTitle}</h3>
-              <p className="mt-1 mb-5 text-[13px] leading-snug text-white/45">{t.seat.previewNote}</p>
-              {preview}
-            </section>
           </div>
         </div>
       </div>,
@@ -384,23 +381,6 @@ export const OpponentSheet: React.FC<OpponentSheetProps> = ({ seat, menu, model,
           {modelSection}
           {styleSection}
           {promptSection}
-          {variables}
-
-          {/* The same preview as on a desktop, folded away until asked for */}
-          <section>
-            <button
-              type="button"
-              aria-expanded={previewOpen}
-              onClick={() => setPreviewOpen((v) => !v)}
-              className="w-full flex items-center justify-between h-[52px] px-4 rounded-[20px] bg-black/35 border border-white/10 text-[15px] text-white cursor-pointer"
-            >
-              {t.seat.previewToggle}
-              <span className={`text-white/50 transition-transform ${previewOpen ? "rotate-180" : ""}`}>
-                <Chevron />
-              </span>
-            </button>
-            {previewOpen && <div className="pt-4">{preview}</div>}
-          </section>
         </div>
 
         <div className="shrink-0 px-5 pt-3">

@@ -28,7 +28,6 @@ interface SeatSnakeProps {
   unfoldLabel: string;
   markTitle: string;
   rowProps: (id: string) => React.ButtonHTMLAttributes<HTMLButtonElement>;
-  pressing: string | null;
 }
 
 const GUTTER = 20; // the page's side padding: where the corner sits
@@ -37,7 +36,6 @@ const ROW_H = 68; // a list row: the face and 10px above and below
 const TOP = 10; // the face's inset from the top of a row, and of the stack
 const STEP = 36; // stacked faces overlap by a quarter
 const SPEED = 450; // px per second along the track: slow enough to see the snake
-const COIN = 40; // over its first 40px down the list a face sheds its coin
 const GLIDE_MS = 300; // a seat coming or going: the rest of the list slides to make room, or close it
 const GLIDE = `${GLIDE_MS}ms cubic-bezier(0.19, 1, 0.22, 1)`;
 
@@ -57,7 +55,6 @@ export const SeatSnake: React.FC<SeatSnakeProps> = ({
   unfoldLabel,
   markTitle,
   rowProps,
-  pressing,
 }) => {
   const n = rows.length;
   // Row j is stacked at k = n-1-j: the last row leads from the left end of the stack
@@ -147,7 +144,7 @@ export const SeatSnake: React.FC<SeatSnakeProps> = ({
               absolute inset-x-0 flex items-center gap-4 px-5 text-left select-none [-webkit-touch-callout:none]
               transition-[opacity,background-color,transform,top] duration-300 cursor-pointer
               ${here ? "opacity-100" : "opacity-0 pointer-events-none"}
-              ${pressing === row.id ? "bg-white/[0.06] scale-[0.98]" : "hover:bg-white/[0.03]"}
+              hover:bg-white/[0.03] active:bg-white/[0.06] active:scale-[0.98]
             `}
             style={{ top: stop(j), height: ROW_H }}
           >
@@ -165,12 +162,10 @@ export const SeatSnake: React.FC<SeatSnakeProps> = ({
         );
       })}
 
-      {/* The faces, riding the track. Stacked, each sits on a coin with a black
-          ring so the overlaps read; the coin fades over its first steps down. */}
+      {/* Every face keeps the same circular frame in the stack and the list. */}
       {rows.map((row, j) => {
         const s = at(j);
         const { x, y } = point(s);
-        const coin = s <= 0 ? 1 : Math.max(0, 1 - s / COIN);
         return (
           <span
             key={row.id}
@@ -182,9 +177,9 @@ export const SeatSnake: React.FC<SeatSnakeProps> = ({
               zIndex: j + 1, // the head, leftmost, lies on top of the stack
               transition: snaking ? "none" : `transform ${GLIDE}, padding ${GLIDE}, background-color ${GLIDE}, box-shadow ${GLIDE}`,
               animation: `fade-in ${GLIDE_MS}ms ease-out`, // a new seat fades in where it lands
-              padding: 6 * coin,
-              backgroundColor: `rgba(44, 44, 46, ${coin})`,
-              boxShadow: `0 0 0 3px rgba(0, 0, 0, ${coin})`,
+              padding: 6,
+              backgroundColor: "rgb(var(--felt-surface-rgb))",
+              boxShadow: "0 0 0 3px rgb(var(--felt-separator-rgb))",
             }}
           >
             <Avatar name={row.id} alt="" className="w-full h-full object-contain" />

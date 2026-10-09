@@ -24,7 +24,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, isExiting }) => {
   return (
     <div
       className={`
-        relative w-full h-full bg-black overflow-hidden
+        relative w-full h-full bg-transparent overflow-hidden
         transition-all duration-700 ease-[cubic-bezier(0.19,1,0.22,1)]
         ${isExiting ? "-translate-y-4 opacity-0 blur-sm" : "translate-y-0 opacity-100"}
       `}

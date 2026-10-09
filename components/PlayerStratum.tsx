@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Card, Player, WinningHand, GamePhase } from "../types";
 import { PlayingCard } from "./PlayingCard";
+import { ChipStack } from "./ChipStack";
 import { Slider } from "./Slider";
 import { AnimatedCounter } from "./AnimatedCounter";
 import { useLanguage } from "../services/i18n";
@@ -398,10 +399,13 @@ export const PlayerStratum: React.FC<PlayerStratumProps> = ({
 
         <div
           className={`
-            rounded-[28px] flex flex-col items-center justify-between py-4 transition-colors duration-300
+            relative isolate rounded-[28px] flex flex-col items-center justify-between py-4 transition-colors duration-300
             ${canAct ? "bg-[#1c1c1e] border border-transparent" : "border border-white/15"}
           `}
         >
+          <div className="absolute inset-x-1 bottom-1 h-14 -z-10 overflow-hidden rounded-b-[24px] opacity-60" aria-hidden="true">
+            <ChipStack amount={player.chips} chipRadius={7} />
+          </div>
           <span className="text-[15px] text-white/55 truncate max-w-full px-3">{handName}</span>
           <div className="relative w-14 h-14">
             <Avatar isHuman alt="" className="w-full h-full object-contain" />
