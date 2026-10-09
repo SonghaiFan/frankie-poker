@@ -1,7 +1,6 @@
 import React from "react";
 import { Card, GamePhase, WinningHand } from "../types";
 import { PlayingCard } from "./PlayingCard";
-import { ChipStack } from "./ChipStack";
 import { AnimatedCounter } from "./AnimatedCounter";
 import { useLanguage } from "../services/i18n";
 
@@ -50,9 +49,6 @@ export const TableStratum: React.FC<TableStratumProps> = ({
             </div>
           );
         })}
-        <div className="absolute bottom-0 inset-x-0 h-14 z-20 opacity-80" aria-hidden="true">
-          <ChipStack amount={pot} chipRadius={9} />
-        </div>
       </div>
 
       {/* The winning hand on the left, the pot on the right */}

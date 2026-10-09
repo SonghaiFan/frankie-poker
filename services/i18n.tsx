@@ -20,6 +20,9 @@ export interface Translations {
     edit: string;
     you: string;
     subtitle: string;
+    uiStyle: string;
+    offsuitDescription: string;
+    frankDescription: string;
     avatar: string;
     felt: string;
     feltNames: [string, string, string, string, string];
@@ -270,6 +273,9 @@ export const translations: Record<Language, Translations> = {
       edit: "Game settings and API key",
       you: "You",
       subtitle: "AI connection, avatar and table colour",
+      uiStyle: "UI style",
+      offsuitDescription: "Minimal · clean and compact",
+      frankDescription: "Original · classic table layout",
       avatar: "Avatar",
       felt: "Table colour",
       feltNames: ["Forest", "Ocean", "Plum", "Walnut", "Charcoal"],
@@ -543,6 +549,9 @@ export const translations: Record<Language, Translations> = {
       edit: "游戏设置与 API 密钥",
       you: "你",
       subtitle: "AI 连接、头像与桌布颜色",
+      uiStyle: "界面风格",
+      offsuitDescription: "极简 · 清晰紧凑",
+      frankDescription: "原版 · 经典牌桌布局",
       avatar: "头像",
       felt: "桌布颜色",
       feltNames: ["森林", "深海", "暮紫", "暖棕", "炭黑"],

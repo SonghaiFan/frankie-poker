@@ -1,7 +1,5 @@
-import { PlayingCard as FrankPlayingCard } from "./frank/PlayingCard";
-import { useGameSettings } from "../services/gameSettings";
 import React, { useState, MouseEvent } from "react";
-import { Card, Suit } from "../types";
+import { Card, Suit } from "../../types";
 
 export type CardPreset = "xs" | "sm" | "md" | "lg" | "xl" | "inherit";
 
@@ -13,11 +11,10 @@ interface PlayingCardProps {
     className?: string;
     style?: React.CSSProperties;
     isWinning?: boolean;
-    dimmed?: boolean; // a hand has been decided and this card is not part of it
     size?: CardPreset | number; // Now accepts a number (pixels) or a preset
 }
 
-const OffsuitPlayingCard: React.FC<PlayingCardProps> = ({
+export const PlayingCard: React.FC<PlayingCardProps> = ({
     card,
     hidden,
     delay = 0,
@@ -25,7 +22,6 @@ const OffsuitPlayingCard: React.FC<PlayingCardProps> = ({
     className = "",
     style,
     isWinning,
-    dimmed = false,
     size = "md",
 }) => {
     // 4-Color Deck Logic
@@ -148,8 +144,7 @@ const OffsuitPlayingCard: React.FC<PlayingCardProps> = ({
                             transform: `
                                 rotateX(${dynamicStyle.rotateX}deg) 
                                 rotateY(${dynamicStyle.rotateY}deg) 
-                                translateY(${isWinning && !hidden ? "-0.45em" : "0"})
-                                scale(${isWinning && !hidden ? Math.max(1.03, dynamicStyle.scale) : dynamicStyle.scale})
+                                scale(${isWinning !== undefined ? 1 : dynamicStyle.scale})
                             `,
                             transition: isWinning
                                 ? "transform 0.4s ease-out"
@@ -158,46 +153,68 @@ const OffsuitPlayingCard: React.FC<PlayingCardProps> = ({
                     >
                         {/* === FRONT FACE === */}
                         <div
-                            className="absolute inset-0 backface-hidden overflow-hidden rounded-[1.8em] bg-[#fafafa] flex flex-col justify-between px-[1.3em] pt-[1em] pb-[1.3em]"
+                            className={`
+                            absolute inset-0 backface-hidden overflow-hidden
+                            rounded-[1em] p-[0.5em]
+                            bg-slate-50 flex flex-col
+                            transition-all duration-300
+                            ${isWinning
+                                    ? "shadow-xl"
+                                    : "shadow-xl"
+                                }
+                        `}
                             style={{
                                 transform: "translateZ(1px)",
-                                boxShadow: `0 0.3em 1.2em rgba(0, 0, 0, 0.25), ${dynamicStyle.shadowX}px ${dynamicStyle.shadowY}px 1.5em rgba(0, 0, 0, 0.15)`,
+                                boxShadow: isWinning
+                                    ? undefined
+                                    : `
+                                0 0.2em 0.3em -0.1em rgba(0, 0, 0, 0.1), 
+                                0 0.1em 0.2em -0.1em rgba(0, 0, 0, 0.06),
+                                ${dynamicStyle.shadowX}px ${dynamicStyle.shadowY}px 1.5em rgba(0, 0, 0, 0.15)
+                            `,
                             }}
                         >
-                            <span
-                                className="font-['Inter'] font-normal leading-none tracking-tight text-[4.4em]"
-                                style={{ color: mainColor }}
-                            >
-                                {card?.rank}
-                            </span>
-                            <span
-                                className="leading-none text-[3.4em]"
-                                style={{ color: mainColor }}
+                            {/* Top Left */}
+                            <div className="flex flex-col items-center self-start relative z-10">
+                                <span
+                                    className="font-['Inter'] font-semibold leading-none tracking-tight text-[2.5em]"
+                                    style={{ color: mainColor }}
+                                >
+                                    {card?.rank}
+                                </span>
+                                <span
+                                    className="leading-none text-[2em]"
+                                    style={{ color: mainColor }}
+                                >
+                                    {card?.suit}
+                                </span>
+                            </div>
+
+                            {/* Center Suit */}
+                            <div
+                                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-10 pointer-events-none"
+                                style={{ color: mainColor, fontSize: '6em' }}
                             >
                                 {card?.suit}
-                            </span>
-                            {/* Greyed out, not see-through: overlapping cards must not show each other */}
-                            <div className={`absolute inset-0 bg-black pointer-events-none transition-opacity duration-500 ${dimmed ? "opacity-55" : "opacity-0"}`} />
+                            </div>
                         </div>
 
                         {/* === BACK FACE === */}
                         <div
-                            className="absolute inset-0 backface-hidden rounded-[1.8em] overflow-hidden bg-[#fafafa] p-[1em]"
+                            className={`
+                                absolute inset-0 backface-hidden rounded-[1em] overflow-hidden
+                                bg-[#141414] border border-[#222]
+                                shadow-xl flex items-center justify-center
+                            `}
                             style={{
                                 transform: "rotateY(180deg) translateZ(1px)",
-                                boxShadow: "0 0.3em 1.2em rgba(0, 0, 0, 0.25)",
                             }}
                         >
-                            <div className="w-full h-full rounded-[0.9em] card-back-hatch" />
+                            <div className="absolute inset-[0.4em] border border-white/[0.03] rounded-[0.6em] pointer-events-none" />
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     );
-};
-
-export const PlayingCard: React.FC<PlayingCardProps> = (props) => {
-  const { settings } = useGameSettings();
-  return settings.uiStyle === "frank" ? <FrankPlayingCard {...props} /> : <OffsuitPlayingCard {...props} />;
 };

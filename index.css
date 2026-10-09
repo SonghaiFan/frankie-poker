@@ -23,3 +23,208 @@
   background-attachment: fixed;
   mask-image: linear-gradient(to bottom, transparent, black 45%);
 }
+
+/* Frank: a single table tree with progressively visible desktop information. */
+.frank-workspace { position: relative; width: 100%; height: 100%; min-height: 0; }
+.frank-table-center { height: 100%; min-width: 0; display: flex; flex-direction: column; }
+.frank-info-toggle { position: absolute; top: max(1rem, env(safe-area-inset-top)); right: 1rem; z-index: 40; padding: .5rem; border-radius: 50%; color: #aaa; background: #0006; cursor: pointer; }
+.frank-information { display: none; }
+.frank-panel-tabs { display: flex; gap: 4px; padding: 10px; border-bottom: 1px solid #ffffff12; flex-shrink: 0; }
+.frank-panel-tabs button { padding: 8px 12px; border-radius: 8px; color: #ffffff70; cursor: pointer; font-size: 13px; }
+.frank-panel-tabs button[aria-pressed="true"] { color: #d4af37; background: #d4af3718; }
+.frank-panel-close { margin-left: auto; }
+.frank-panel-heading { display: none; }
+.frank-roster-panel, .frank-log-panel { min-height: 0; min-width: 0; flex: 1; flex-direction: column; }
+.frank-panel-content { min-height: 0; flex: 1; padding: 14px 10px; }
+.frank-workspace[data-panel="roster"] .frank-roster-panel,
+.frank-workspace[data-panel="log"] .frank-log-panel { display: flex; }
+.frank-workspace[data-panel="roster"] .frank-log-panel,
+.frank-workspace[data-panel="log"] .frank-roster-panel { display: none; }
+.frank-info-backdrop { position: absolute; inset: 0; z-index: 39; background: #0008; }
+.frank-workspace[data-layout="compact"][data-open="true"] .frank-information {
+  display: flex; flex-direction: column; position: absolute; z-index: 40;
+  right: 0; bottom: 0; width: min(100%, 480px); height: 82%;
+  padding-bottom: env(safe-area-inset-bottom); border-radius: 22px 22px 0 0;
+  background: #13251d; border: 1px solid #ffffff15;
+}
+.frank-workspace:not([data-layout="compact"]) {
+  display: grid; grid-template-columns: minmax(0, 1fr) 290px; gap: 16px;
+  max-width: 1920px; margin-inline: auto; padding: 48px 20px 12px;
+}
+.frank-workspace:not([data-layout="compact"]) .frank-info-toggle { display: none; }
+.frank-workspace:not([data-layout="compact"]) .frank-table-center {
+  display: grid; grid-template-rows: minmax(244px, 25fr) minmax(160px, 41fr) minmax(240px, 34fr);
+  grid-column: 1; grid-row: 1; min-height: 0;
+  border: 1px solid #ffffff0d; border-radius: 24px; overflow: visible;
+}
+.frank-workspace:not([data-layout="compact"]) .frank-information {
+  display: flex; flex-direction: column; min-height: 0; grid-column: 2; grid-row: 1;
+  border: 1px solid #ffffff10; border-radius: 18px; background: #00000015;
+}
+.frank-workspace:not([data-layout="compact"]) :is(.frank-opponents-region, .frank-board-region, .frank-player-region) { min-height: 0; }
+.frank-workspace:not([data-layout="compact"]) :is(.frank-opponents-region, .frank-board-region, .frank-player-region) > section { height: 100%; }
+.frank-workspace:not([data-layout="compact"]) [data-frank-table] { container-type: inline-size; }
+.frank-workspace:not([data-layout="compact"]) [data-frank-player] { border-radius: 0 0 24px 24px; }
+.frank-workspace[data-layout="wide"] { grid-template-columns: 280px minmax(0, 1fr) 300px; }
+.frank-workspace[data-layout="wide"] .frank-table-center { grid-column: 2; }
+.frank-workspace[data-layout="wide"] .frank-information { display: contents; }
+.frank-workspace[data-layout="wide"] .frank-panel-tabs { display: none; }
+.frank-workspace[data-layout="wide"] :is(.frank-roster-panel, .frank-log-panel) {
+  display: flex; grid-row: 1; border: 1px solid #ffffff10; border-radius: 18px; background: #00000015;
+}
+.frank-workspace[data-layout="wide"] .frank-roster-panel { grid-column: 1; }
+.frank-workspace[data-layout="wide"] .frank-log-panel { grid-column: 3; }
+.frank-workspace[data-layout="wide"] .frank-panel-heading { display: block; padding: 16px 14px 0; color: #d4af37aa; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
+@media (min-width: 1024px) and (max-height: 740px) {
+  .frank-workspace:not([data-layout="compact"]) { padding-top: 40px; padding-bottom: 8px; }
+  .frank-workspace:not([data-layout="compact"]) .frank-table-center { grid-template-rows: 244px minmax(125px, 1fr) 230px; }
+  .frank-workspace:not([data-layout="compact"]) [data-frank-player] .pointer-events-auto.text-\[7px\] { font-size: 10px; }
+}
+
+.frank-workspace:not([data-layout="compact"]) [data-frank-table] { gap: 10px; padding-block: 8px; }
+.frank-workspace:not([data-layout="compact"]) .frank-pot-display { position: relative; top: auto; margin: 0; flex-shrink: 0; }
+.frank-workspace:not([data-layout="compact"]) .frank-pot-display > span:first-child { font-size: 10px; }
+.frank-workspace:not([data-layout="compact"]) .frank-pot-display > span:last-child { font-size: 38px; }
+.frank-workspace:not([data-layout="compact"]) .frank-community-row { height: auto; margin-top: 0; margin-bottom: 24px; }
+.frank-workspace:not([data-layout="compact"]) .frank-winning-hand { bottom: 4px; }
+.frank-workspace:not([data-layout="compact"]) .frank-winning-hand > span { font-size: 12px; }
+.frank-information img { border-radius: 8px; }
+.frank-workspace:not([data-layout="compact"]) .frank-table-center { grid-template-columns: minmax(0, 1fr); }
+.frank-workspace :is(.frank-opponents-region, .frank-board-region, .frank-player-region) { min-width: 0; }
+/* Layout owns size changes; the original all-property transitions must not
+   trail a breakpoint and temporarily cover the adjacent information panel. */
+.frank-workspace :is(.frank-opponents-region, .frank-player-region) > section { transition-property: background-color, box-shadow, opacity; }
+
+/* Shared entry typography and copy; Frank changes only control surfaces. */
+[data-ui-style="frank"] .entry-primary:not(:disabled) {
+  background: #d4af37;
+  color: #171408;
+  border-radius: 14px;
+  box-shadow: 0 4px 20px #d4af371a;
+}
+[data-ui-style="frank"] .entry-primary:not(:disabled):hover { background: #e3c353; }
+[data-ui-style="frank"] .entry-secondary {
+  background: #151b17;
+  color: #d4af37;
+  border: 1px solid #d4af3766;
+  border-radius: 12px;
+}
+/* Reserve room for the original large portraits without pushing mobile actions below the viewport. */
+.frank-workspace[data-layout="compact"] [data-frank-table] {
+  height: calc(66svh - max(24svh, 244px));
+}
+
+/* Card scale follows the actual table, not the viewport's tablet breakpoint. */
+.frank-workspace [data-frank-table],
+.frank-workspace [data-frank-player] { container-type: inline-size; }
+.frank-workspace :is(.frank-board-card, .frank-community-card) {
+  font-size: clamp(5px, min(1.65cqw, 1svh), 12px);
+}
+.frank-workspace .frank-community-row { gap: clamp(4px, 1cqw, 12px); }
+.frank-workspace .frank-hole-card {
+  font-size: clamp(7px, min(1.8cqw, 1svh), 12px);
+}
+.frank-workspace .frank-pot-display > span:first-child { font-size: clamp(10px, 1.4cqw, 14px); }
+.frank-workspace .frank-pot-display > span:last-child { font-size: clamp(30px, 5cqw, 48px); }
+
+/* Frank's room selection: illustrated rooms with a quiet, dedicated roster rail. */
+[data-ui-style="frank"] .setup-page .setup-shell { max-width: 1440px; }
+[data-ui-style="frank"] .setup-venue-card { opacity: .85; }
+[data-ui-style="frank"] .setup-venue-card[aria-pressed="true"] { opacity: 1; }
+[data-ui-style="frank"] .setup-submit .entry-primary {
+  background: #f5f5f4; color: #151515; border-radius: 18px; box-shadow: none;
+}
+@media (min-width: 1024px) {
+  [data-ui-style="frank"] .setup-shell { padding: 16px 40px 48px; }
+  [data-ui-style="frank"] .setup-grid {
+    grid-template-columns: minmax(0, 1fr) 270px;
+    column-gap: 28px;
+    padding-top: 32px;
+    position: relative;
+  }
+  [data-ui-style="frank"] .setup-bankroll { padding: 0 0 28px 28px; border-left: 1px solid #ffffff20; }
+  [data-ui-style="frank"] .setup-roster { padding-left: 8px; border-left: 1px solid #ffffff20; align-self: stretch; }
+  [data-ui-style="frank"] .setup-venue-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  [data-ui-style="frank"] .setup-venue-card {
+    grid-column: span 1; height: clamp(230px, 21vw, 280px); padding: 20px; border-radius: 24px;
+  }
+  [data-ui-style="frank"] .setup-venue-card > div { padding-right: 0; }
+  [data-ui-style="frank"] .setup-venue-card > div > div:first-child { font-size: 17px; }
+  [data-ui-style="frank"] .setup-venue-card img { height: 90%; right: -28%; bottom: -29%; }
+  [data-ui-style="frank"] .setup-roster > p { font-size: 12px; }
+  [data-ui-style="frank"] .setup-submit { margin-top: 16px; padding-top: 8px; }
+}
+
+[data-ui-style="frank"] .setup-venue-card img {
+  transform-origin: 65% 70%;
+  transition: transform 350ms ease;
+}
+[data-ui-style="frank"] .setup-venue-card[aria-pressed="true"] img {
+  transform: scale(1.14);
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-ui-style="frank"] .setup-venue-card img { transition: none; }
+}
+
+/* Frank Setup design tokens: shared geometry across enabled and disabled states. */
+[data-ui-style="frank"] .setup-page {
+  --setup-control-height: 52px;
+  --setup-control-radius: 16px;
+  --setup-icon-size: 40px;
+  --setup-card-radius: 24px;
+  --setup-gap: 14px;
+  --setup-card-height: clamp(230px, 21vw, 280px);
+  --setup-heading-height: 180px;
+}
+[data-ui-style="frank"] .setup-venue-card,
+[data-ui-style="frank"] .setup-venue-card:hover {
+  border: 0;
+  box-shadow: none;
+  border-radius: var(--setup-card-radius);
+}
+[data-ui-style="frank"] .setup-venue-card:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 4px;
+}
+[data-ui-style="frank"] .setup-submit > button {
+  height: var(--setup-control-height);
+  min-height: var(--setup-control-height);
+  border-radius: var(--setup-control-radius);
+  width: 100%;
+  padding: 0 12px;
+  font-size: 14px;
+  line-height: 1.25;
+}
+[data-ui-style="frank"] .setup-page .entry-secondary {
+  width: var(--setup-icon-size);
+  height: var(--setup-icon-size);
+  border-radius: var(--setup-control-radius);
+  flex-shrink: 0;
+}
+@media (min-width: 1024px) {
+  [data-ui-style="frank"] .setup-grid {
+    height: calc(var(--setup-heading-height) + 2 * var(--setup-card-height) + var(--setup-gap));
+    flex: none;
+    grid-template-rows: 150px minmax(0, 1fr);
+    padding-top: 0;
+    margin-top: 32px;
+  }
+  [data-ui-style="frank"] .frank-setup-heading { height: var(--setup-heading-height); }
+  [data-ui-style="frank"] .setup-venue-grid { gap: var(--setup-gap); }
+  [data-ui-style="frank"] .setup-venue-card { height: var(--setup-card-height); }
+  [data-ui-style="frank"] .setup-roster { min-height: 0; height: 100%; }
+  [data-ui-style="frank"] .setup-roster > :not(.setup-seat-list) { flex-shrink: 0; }
+  [data-ui-style="frank"] .setup-seat-list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #ffffff30 transparent;
+  }
+  [data-ui-style="frank"] .setup-submit {
+    margin-top: auto;
+    padding-top: 16px;
+    padding-bottom: 0 !important;
+  }
+}

@@ -25,6 +25,7 @@ Real gameplay against JEV, from player actions through showdown. The mobile reco
 - Give each opponent its own model, play style, and prompt.
 - Switch between **Edit** and **Preview** to inspect your prompt on preflop, flop, turn, and river sample situations.
 - Add your own derived poker variables through registered plugins, then use them in the same editor.
+- Choose **Offsuit** (default minimal UI) or **Frank** (the original pre-minimal layout, cards and controls) in your avatar’s settings. The style saves on this device and changes presentation only.
 - Choose your avatar and background, with English and Chinese UI and layouts for phones and desktops.
 
 Chips are virtual. Model calls use your OpenRouter balance. This is an experimental playground, not a solved GTO engine or a controlled model benchmark.

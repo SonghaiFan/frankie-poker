@@ -1,14 +1,16 @@
+import { PlayerStratum as FrankPlayerStratum } from "./frank/PlayerStratum";
+import { useGameSettings } from "../services/gameSettings";
 import React, { useState, useEffect, useRef } from "react";
 import { Card, Player, WinningHand, GamePhase } from "../types";
 import { PlayingCard } from "./PlayingCard";
-import { ChipStack } from "./ChipStack";
 import { Slider } from "./Slider";
 import { AnimatedCounter } from "./AnimatedCounter";
 import { useLanguage } from "../services/i18n";
 import { describeHand } from "../services/pokerEvaluator";
 import { Avatar } from "./Avatar";
 
-interface PlayerStratumProps {
+export interface PlayerStratumProps {
+  onOpenSettings: () => void;
   player: Player;
   potSize: number;
   board: Card[];
@@ -107,6 +109,7 @@ const Pill: React.FC<{
 );
 
 export const PlayerStratum: React.FC<PlayerStratumProps> = ({
+  onOpenSettings,
   player,
   potSize,
   board,
@@ -125,6 +128,7 @@ export const PlayerStratum: React.FC<PlayerStratumProps> = ({
   phase,
 }) => {
   const { t, translateHand } = useLanguage();
+  const { settings } = useGameSettings();
   const [isRaising, setIsRaising] = useState(false);
   const [raiseAmount, setRaiseAmount] = useState(0);
 
@@ -332,8 +336,16 @@ export const PlayerStratum: React.FC<PlayerStratumProps> = ({
     );
   };
 
+  if (settings.uiStyle === 'frank') return <FrankPlayerStratum
+    {...{onOpenSettings, player, potSize, board, onAction, canAct, toCall, gameStatus,
+      onNextHand, onSkipHand, skipping, onRebuy, canRebuy, onRestart, winningHand, bigBlind, phase,
+      isRaising, setIsRaising, raiseAmount, setRaiseAmount, safeMin, maxRaiseTotal, safePotMarker, canRaise, callAmount}}
+    handleConfirmRaise={confirmRaise}
+    handleQuickBet={type => type === 'min' ? setRaiseAmount(safeMin) : quickBet(type)}
+  />;
+
   return (
-    <section className="w-full px-5">
+    <section className="player-controls w-full px-5">
       <div className="h-14 flex items-center">{renderSizer()}</div>
 
       {renderButtons()}
@@ -409,12 +421,12 @@ export const PlayerStratum: React.FC<PlayerStratumProps> = ({
             ${canAct ? "bg-[#1c1c1e] border border-transparent" : "border border-white/15"}
           `}
         >
-          <div className="absolute inset-x-1 bottom-1 h-14 -z-10 overflow-hidden rounded-b-[24px] opacity-60" aria-hidden="true">
-            <ChipStack amount={player.chips} chipRadius={7} />
-          </div>
           <span className="text-[15px] text-white/55 truncate max-w-full px-3">{handName}</span>
           <div className="relative w-14 h-14">
-            <Avatar isHuman alt="" className="w-full h-full object-contain" />
+            <button type="button" onClick={onOpenSettings} aria-label={t.profile.edit}
+              className="w-full h-full cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-white">
+              <Avatar isHuman alt="" className="w-full h-full object-contain" />
+            </button>
             {player.isDealer && (
               <span className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-white text-black text-[11px] font-semibold flex items-center justify-center">
                 D

@@ -1,7 +1,6 @@
 import { PLAYER_AVATARS, useGameSettings } from "../services/gameSettings";
 import React, { useState } from "react";
 import {
-  HERO_AVATAR,
   HERO_EMOJI_AVATAR,
   avatarFor,
   emojiAvatarFor,

@@ -9,6 +9,7 @@ import { AI_MODELS, DEFAULT_CONFIG, modelCostPerM } from "../constants";
 import { STARTING_WEALTH } from "../services/bankroll";
 import { AIModelOption, GameConfig } from "../types";
 import { getAIConnection, subscribeAIConnection } from '../services/aiConnection';
+import { useGameSettings } from "../services/gameSettings";
 import { useLanguage } from "../services/i18n";
 import { LanguageToggle } from "./LanguageToggle";
 import { OpponentSheet } from "./OpponentSheet";
@@ -140,6 +141,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   isExiting,
 }) => {
   const { t, lang } = useLanguage();
+  const { settings } = useGameSettings();
+  const frank = settings.uiStyle === "frank";
   const connection = useSyncExternalStore(subscribeAIConnection, getAIConnection);
   const [venueIndex, setVenueIndex] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
@@ -258,13 +261,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   return (
     <div
       className={`
-        w-full h-full overflow-y-auto no-scrollbar bg-transparent
+        setup-page w-full h-full overflow-y-auto no-scrollbar bg-transparent
         transition-all duration-700 ease-[cubic-bezier(0.19,1,0.22,1)]
         ${isExiting ? "-translate-y-6 opacity-0 blur-sm" : "opacity-100"}
       `}
       style={{ paddingTop: "env(safe-area-inset-top)" }}
     >
-      <div className="w-full max-w-[480px] sm:max-w-[720px] md:max-w-[880px] lg:max-w-[1080px] mx-auto min-h-full flex flex-col">
+      <div className="setup-shell w-full max-w-[480px] sm:max-w-[720px] md:max-w-[880px] lg:max-w-[1080px] mx-auto min-h-full flex flex-col">
         {/* You, and the language */}
         <div className="h-14 px-5 flex items-center justify-between shrink-0">
           <button
@@ -281,10 +284,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         </div>
 
         {/* One column on a phone; on a desktop, where you play on the left and who with on the right */}
-        <div className="flex-1 flex flex-col lg:grid lg:grid-cols-[minmax(0,1.2fr)_minmax(320px,1fr)] lg:gap-5 xl:gap-8 lg:items-start">
-        <div className="lg:min-w-0">
+        <div className="setup-grid flex-1 flex flex-col lg:grid lg:grid-cols-[minmax(0,1.2fr)_minmax(320px,1fr)] lg:gap-x-5 xl:gap-x-8 lg:gap-y-0 lg:grid-rows-[auto_1fr] lg:items-start lg:pt-8">
         {/* Bankroll */}
-        <div className="px-5 pt-6 pb-7 lg:pt-8 lg:pb-9">
+        <div className="setup-bankroll px-5 pt-6 pb-7 lg:pt-0 lg:pb-6 lg:col-start-2 lg:row-start-1">
           <div className="text-[60px] sm:text-[64px] xl:text-[72px] font-extralight leading-none tracking-tight text-white tabular-nums">
             {wealth.toLocaleString()}
           </div>
@@ -304,6 +306,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           )}
         </div>
 
+        <div className="setup-venues lg:min-w-0 lg:col-start-1 lg:row-start-1 lg:row-span-2">
+        {frank && <header className="frank-setup-heading px-5 pb-8">
+          <h1 className="text-[48px] lg:text-[64px] xl:text-[72px] font-extralight leading-[1.02] tracking-tight">{lang === 'zh' ? <>选一间<br />喜欢的牌室</> : <>Choose<br />a Room</>}</h1>
+        </header>}
         {/* Venues */}
         <div
           ref={carouselRef}
@@ -319,7 +325,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 onClick={() => scrollToVenue(i)}
                 aria-pressed={i === venueIndex}
                 className={`
-                  relative overflow-hidden shrink-0 w-[84%] h-[260px] snap-start rounded-[32px] p-6 text-left
+                  setup-venue-card relative overflow-hidden shrink-0 w-[84%] h-[260px] snap-start rounded-[32px] p-6 text-left
                   flex flex-col justify-between bg-gradient-to-br ${v.bgClass} text-black select-none cursor-pointer
                   transition-opacity duration-300 ${i === venueIndex ? "opacity-100" : "opacity-60"}
                 `}
@@ -339,7 +345,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         </div>
 
         {/* Six venues: two columns on compact layouts, three on wider layouts. */}
-        <div className="hidden sm:grid grid-cols-2 md:grid-cols-6 lg:grid-cols-2 xl:grid-cols-6 gap-3 px-5">
+        <div className="setup-venue-grid hidden sm:grid grid-cols-2 md:grid-cols-6 lg:grid-cols-2 xl:grid-cols-6 gap-3 px-5">
           {VENUES.map((v, i) => {
             const open = affordable(v, wealth);
             const on = i === venueIndex;
@@ -353,7 +359,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 }}
                 aria-pressed={on}
                 className={`
-                  relative overflow-hidden min-w-0 h-[260px] xl:h-[280px] rounded-[28px] p-4 xl:p-5 text-left flex flex-col justify-between
+                  setup-venue-card relative overflow-hidden min-w-0 h-[260px] lg:h-[220px] xl:h-[240px] rounded-[28px] p-4 xl:p-5 text-left flex flex-col justify-between
                   col-span-1 md:col-span-2 lg:col-span-1 xl:col-span-3
                   bg-gradient-to-br ${v.bgClass} text-black select-none cursor-pointer
                   transition-[opacity,transform,box-shadow] duration-300
@@ -374,36 +380,36 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
         </div>
 
-        <div className="flex-1 flex flex-col lg:self-stretch">
+        <div className="setup-roster flex-1 flex flex-col lg:col-start-2 lg:row-start-2 lg:self-start lg:min-w-0">
 
         {/* The table: faces stacked until you open it, then a list you can edit */}
-        <div className="px-5 pt-10 lg:pt-8 flex items-center justify-between gap-4">
+        <div className="px-5 pt-10 lg:pt-0 flex flex-wrap items-center justify-between gap-x-2 gap-y-3">
           {isDesktop ? (
-            <div className="flex items-center gap-1.5 text-[20px] text-white">{t.setup.yourTable}</div>
+            <div className="flex shrink-0 items-center gap-1.5 whitespace-nowrap text-[20px] text-white">{t.setup.yourTable}{frank && <span className="text-[15px] text-white/60"> ({t.setup.playersCount(seats.length + 1)})</span>}</div>
           ) : (
             <button
               type="button"
               onClick={() => setUnfolded((u) => !u)}
               aria-expanded={unfolded}
-              className="flex items-center gap-1.5 text-[20px] text-white cursor-pointer"
+              className="flex shrink-0 items-center gap-1.5 whitespace-nowrap text-[20px] text-white cursor-pointer"
             >
-              {t.setup.yourTable}
+              {t.setup.yourTable}{frank && <span className="text-[15px] text-white/60"> ({t.setup.playersCount(seats.length + 1)})</span>}
               <span className={`text-white/40 transition-transform duration-300 ${unfolded ? "rotate-180" : ""}`}>
                 <ChevronDown />
               </span>
             </button>
           )}
-          <div className="flex items-center gap-1">
+          {!frank && <div className="flex shrink-0 items-center gap-1">
             <button
               type="button"
               onClick={removeSeat}
               disabled={seats.length <= MIN_OPPONENTS}
               aria-label={t.setup.removeSeat}
-              className="w-9 h-9 rounded-full bg-[#1c1c1e] text-white text-[20px] leading-none disabled:opacity-30 active:scale-95 transition cursor-pointer disabled:cursor-default"
+              className="entry-secondary w-9 h-9 rounded-full bg-[#1c1c1e] text-white text-[20px] leading-none disabled:opacity-30 active:scale-95 transition cursor-pointer disabled:cursor-default"
             >
               −
             </button>
-            <span className="min-w-[88px] text-center text-[15px] text-white/70 tabular-nums">
+            <span className="min-w-[76px] sm:min-w-[88px] whitespace-nowrap text-center text-[15px] text-white/70 tabular-nums">
               {t.setup.playersCount(seats.length + 1)}
             </span>
             <button
@@ -411,16 +417,26 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               onClick={addSeat}
               disabled={seats.length >= MAX_OPPONENTS}
               aria-label={t.setup.addSeat}
-              className="w-9 h-9 rounded-full bg-[#1c1c1e] text-white text-[20px] leading-none disabled:opacity-30 active:scale-95 transition cursor-pointer disabled:cursor-default"
+              className="entry-secondary w-9 h-9 rounded-full bg-[#1c1c1e] text-white text-[20px] leading-none disabled:opacity-30 active:scale-95 transition cursor-pointer disabled:cursor-default"
             >
               +
             </button>
-          </div>
+          </div>}
         </div>
         <p className="px-5 mt-1 text-[14px] text-white/45">{local
           ? (lang === 'zh' ? '简单规则对手，用于测试界面与牌局流程。练习输赢不影响资金和对手统计。' : 'Simple rule-based opponents for testing the game. Practice leaves your bankroll and opponent records unchanged.')
           : listOpen ? t.setup.tapToEdit : t.setup.tapToOpen}</p>
 
+        <div className="setup-seat-list">
+        {frank && (
+          <button type="button" onClick={() => { addSeat(); setUnfolded(true); }}
+            disabled={seats.length >= MAX_OPPONENTS}
+            aria-label={t.setup.addSeat}
+            className="mx-5 mt-4 mb-1 flex items-center gap-3 text-sm text-white/70 cursor-pointer disabled:opacity-35 disabled:cursor-default">
+            <span aria-hidden="true" className="w-12 h-12 rounded-full border border-dashed border-white/35 flex items-center justify-center text-2xl">+</span>
+            <span>{seats.length >= MAX_OPPONENTS ? (lang === 'zh' ? '牌桌已满' : 'Table full') : (lang === 'zh' ? '添加对手' : 'Add opponent')}</span>
+          </button>
+        )}
         <SeatSnake
           rows={seats.map((seat, i) => ({
             id: seat.id,
@@ -439,11 +455,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           unfoldLabel={t.setup.tapToOpen}
           markTitle={t.seat.customPrompt}
           rowProps={bind}
+          onRemove={frank && seats.length > MIN_OPPONENTS ? (id) => setSeats(prev => prev.length > MIN_OPPONENTS ? prev.filter(seat => seat.id !== id) : prev) : undefined}
+          removeLabel={(name) => lang === 'zh' ? `移除 ${name}` : `Remove ${name}`}
         />
+
+        </div>
 
         {/* Sit down */}
         <div
-          className="felt-footer isolate sticky bottom-0 z-10 mt-auto px-5 pt-8"
+          className="setup-submit felt-footer isolate sticky bottom-0 z-10 mt-auto px-5 pt-8 lg:relative lg:mt-0 lg:pt-6"
           style={{ paddingBottom: "max(1.25rem, env(safe-area-inset-bottom))" }}
         >
           {customModel && <p className="mb-3 text-sm text-white/65 break-words">{lang === 'zh' ? '所有对手使用：' : 'All opponents use: '}{customModel}</p>}
@@ -451,7 +471,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             <button
               type="button"
               onClick={() => onStartGame(config)}
-              className="w-full h-[52px] rounded-full bg-white text-black text-[16px] active:scale-[0.98] transition-transform cursor-pointer"
+              className="entry-primary w-full h-[52px] rounded-full bg-white text-black text-[16px] active:scale-[0.98] transition-transform cursor-pointer"
             >
               {local ? (lang === 'zh' ? '开始本地练习 · 无需密钥' : 'Practice locally · No API key') : t.setup.sitDown(venue.buyIn)}
             </button>

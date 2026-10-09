@@ -1,3 +1,8 @@
+import { TableLayout as FrankTableLayout } from "./frank/TableLayout";
+import { useGameSettings } from "../services/gameSettings";
+import { AIStratum as FrankAIStratum } from "./frank/AIStratum";
+import { TableStratum as FrankTableStratum } from "./frank/TableStratum";
+import { ActionButton } from "./ActionButton";
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { AIStratum } from './AIStratum';
 import { TableStratum } from './TableStratum';
@@ -18,10 +23,12 @@ interface PokerGameProps {
     wealth: number; // bankroll outside the table
     onWealthChange: (delta: number) => void;
     onExit: (chipsOnTable: number) => void;
+    onOpenSettings: () => void;
 }
 
-export const PokerGame: React.FC<PokerGameProps> = ({ config, wealth, onWealthChange, onExit }) => {
+export const PokerGame: React.FC<PokerGameProps> = ({ config, wealth, onWealthChange, onExit, onOpenSettings }) => {
     const { t } = useLanguage();
+    const { settings } = useGameSettings();
     // Centralized Game State
     const [gameState, setGameState] = useState<GameState>(() => initializeGame(config));
 
@@ -707,6 +714,88 @@ export const PokerGame: React.FC<PokerGameProps> = ({ config, wealth, onWealthCh
 
     if (!humanPlayer) return <div>{t.game.loading}</div>;
 
+    if (settings.uiStyle === "frank") return (
+        <div className="flex flex-col h-full w-full z-10 overflow-hidden relative">
+            <button
+                onClick={() => onExit(humanPlayer.chips)}
+                className="absolute top-4 left-4 z-50 p-2 rounded-full bg-black/40 text-white/30 hover:text-white hover:bg-white/10 transition-all backdrop-blur-md"
+                title={t.game.exitTitle}
+                aria-label={t.game.exitTitle}
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
+            </button>
+
+            {/* READY OVERLAY */}
+            {!hasStarted && (
+                <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md animate-in fade-in duration-500">
+                    <div className="flex flex-col items-center gap-4 md:gap-6 p-4 md:p-8 relative">
+                        <div className="absolute inset-0 bg-[#d4af37]/5 blur-3xl rounded-full" />
+                        <div className="text-base md:text-2xl font-light tracking-widest text-white font-sans uppercase relative z-10 text-center">
+                            {t.game.tableReady}
+                        </div>
+                        <ActionButton
+                            onClick={handleStartGame}
+                            variant="gold"
+                            className="px-8 py-4 md:px-12 md:py-6 text-xs md:text-lg tracking-[0.2em] md:tracking-[0.3em] relative z-10 shadow-[0_0_30px_rgba(212,175,55,0.2)] md:shadow-[0_0_50px_rgba(212,175,55,0.3)] hover:shadow-[0_0_70px_rgba(212,175,55,0.5)]"
+                        >
+                            {t.game.imReady}
+                        </ActionButton>
+                    </div>
+                </div>
+            )}
+
+            <FrankTableLayout
+              roster={<TableRoster players={gameState.players} activePlayerId={gameState.activePlayerId} bigBlind={config.blindBig} buyIn={config.startingStackHuman} />}
+              log={<HandLog history={gameState.handHistory} notes={gameState.handNotes ?? {}} players={gameState.players} phase={gameState.phase} activePlayerId={gameState.activePlayerId} />}
+            >
+            {/* AI Stratum: Flies in from TOP */}
+            <div className="frank-opponents-region w-full shrink-0 animate-slide-in-top z-30">
+                <FrankAIStratum
+                    players={aiPlayers}
+                    activePlayerId={gameState.activePlayerId}
+                    phase={gameState.phase}
+                    humanHasFolded={humanHasFolded}
+                    winningHand={gameState.winningHand}
+                    aiIntent={aiIntent}
+                />
+            </div>
+
+            {/* Table Stratum: Zooms/Fades in with Delay */}
+            <div className="frank-board-region w-full grow flex flex-col justify-center animate-zoom-fade-in z-10" style={{ animationDelay: '0.3s' }}>
+                <FrankTableStratum
+                    pot={gameState.pot}
+                    board={gameState.board}
+                    phase={gameState.phase}
+                    winningHand={gameState.winningHand}
+                />
+            </div>
+
+            {/* Player Stratum: Flies in from BOTTOM */}
+            <div className="frank-player-region w-full shrink-0 animate-slide-in-bottom z-30">
+                <PlayerStratum
+                    board={gameState.board}
+                    onOpenSettings={onOpenSettings}
+                    onSkipHand={() => setSkipping(true)}
+                    skipping={skipping}
+                    player={humanPlayer}
+                    potSize={gameState.pot}
+                    onAction={(a, amt) => handlePlayerAction(humanPlayer.id, a, amt)}
+                    canAct={isHumanTurn}
+                    toCall={humanToCall}
+                    gameStatus={gameStatus}
+                    onNextHand={startNewHand}
+                    onRebuy={handleRebuy}
+                    canRebuy={canRebuy}
+                    onRestart={handleRestartGame}
+                    winningHand={gameState.winningHand}
+                    bigBlind={config.blindBig}
+                    phase={gameState.phase}
+                />
+            </div>
+            </FrankTableLayout>
+        </div>
+    );
+
     return (
         <div
             className="h-full w-full bg-transparent overflow-hidden relative"
@@ -778,6 +867,7 @@ export const PokerGame: React.FC<PokerGameProps> = ({ config, wealth, onWealthCh
 
                 <div className="shrink-0 animate-slide-in-bottom">
                     <PlayerStratum
+                        onOpenSettings={onOpenSettings}
                         player={humanPlayer}
                         potSize={gameState.pot}
                         board={gameState.board}

@@ -82,7 +82,7 @@ function AppContent() {
     };
 
     return (
-        <main style={feltStyle(settings.color)} className="w-full h-[100svh] flex flex-col felt-background text-[#e0e0e0] font-sans overflow-hidden relative selection:bg-[#d4af37] selection:text-black">
+        <main data-ui-style={settings.uiStyle} style={feltStyle(settings.color)} className="w-full h-[100svh] flex flex-col felt-background text-[#e0e0e0] font-sans overflow-hidden relative selection:bg-[#d4af37] selection:text-black">
             <TextureOverlay />
             {settingsOpen && <GameSettings name={view === "LOGIN" ? undefined : user ?? undefined} requireConnection={requireConnection} onClose={closeSettings} />}
             
@@ -109,6 +109,7 @@ function AppContent() {
 
                 {view === 'GAME' && (
                     <PokerGame 
+                        onOpenSettings={() => setSettingsOpen(true)}
                         config={config} 
                         wealth={isLocalGame(config) ? PRACTICE_STACK : wealth}
                         onWealthChange={isLocalGame(config) ? () => {} : adjustWealth}

@@ -1,0 +1,46 @@
+- main [ref=f4e3]:
+  - generic [ref=f4e5]:
+    - generic [ref=f4e6]:
+      - button "Game settings and API key" [ref=f4e7]
+      - group "Language selection" [ref=f4e12]:
+        - button "EN" [pressed] [ref=f4e13] [cursor=pointer]
+        - button "中文" [ref=f4e14] [cursor=pointer]
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: K
+                      - generic: ♠
+                    - generic: ♠
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: A
+                      - generic: ♥
+                    - generic: ♥
+    - generic [ref=f4e15]:
+      - generic [ref=f4e17]:
+        - heading [level=1] [ref=f4e18]:
+          - img "Frank" [ref=f4e19]
+        - heading "Frank's Hold'em" [level=2] [ref=f4e25]
+      - generic [ref=f4e28]:
+        - textbox "Your name" [active] [ref=f4e31]:
+          - /placeholder: ENTER CALLSIGN
+          - text: Layout
+        - generic [ref=f4e32]:
+          - button "ESTABLISH LINK" [ref=f4e33]
+          - generic [ref=f4e36]: • IDENTITY DETECTED
+      - generic [ref=f4e38]:
+        - generic [ref=f4e39]: Sys v1.0.0
+        - generic [ref=f4e40]: •
+        - generic [ref=f4e41]: Made by 范不着Frank

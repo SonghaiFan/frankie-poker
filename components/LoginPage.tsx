@@ -24,6 +24,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, isExiting, onOpen
     if (name) onLogin(name);
   };
 
+
   return (
     <div
       className={`
@@ -94,7 +95,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin, isExiting, onOpen
           <button
             type="submit"
             disabled={!name}
-            className="w-full h-[52px] rounded-full bg-white text-black text-[16px] active:scale-[0.98] transition-all cursor-pointer disabled:bg-transparent disabled:border disabled:border-white/15 disabled:text-white/35 disabled:cursor-default"
+            className="entry-primary w-full h-[52px] rounded-full bg-white text-black text-[16px] active:scale-[0.98] transition-all cursor-pointer disabled:bg-transparent disabled:border disabled:border-white/15 disabled:text-white/35 disabled:cursor-default"
           >
             {t.login.play}
           </button>

@@ -17,7 +17,7 @@ const Check = ({ className = '' }: { className?: string }) => (
 // rises from the bottom on a phone, settles in the middle on a larger screen —
 // and every change shows straight away on the felt behind it.
 export function GameSettings({ onClose, name, requireConnection = false }: { onClose: () => void; name?: string; requireConnection?: boolean }) {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const { settings, update } = useGameSettings();
   const done = useRef<HTMLButtonElement>(null);
   const custom = !FELTS.includes(settings.color.toLowerCase());
@@ -33,7 +33,7 @@ export function GameSettings({ onClose, name, requireConnection = false }: { onC
 
   // Portalled to the body: the lobby animates with a transform, which would pin a fixed sheet to it
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-6" role="dialog" aria-modal="true" aria-labelledby="game-settings-title">
+    <div data-ui-style={settings.uiStyle} className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-6" role="dialog" aria-modal="true" aria-labelledby="game-settings-title">
       {/* Light enough that the felt colour you pick still shows through */}
       <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] animate-[fade-in_200ms_ease-out]" onClick={onClose} />
 
@@ -63,6 +63,24 @@ export function GameSettings({ onClose, name, requireConnection = false }: { onC
         </div>
 
         <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar px-5 space-y-7 pb-2">
+          <section>
+            <h3 className="text-[14px] text-white/45 mb-2">{t.profile.uiStyle}</h3>
+            <div className="grid grid-cols-2 gap-3" role="group" aria-label={t.profile.uiStyle}>
+              {(['offsuit', 'frank'] as const).map(style => (
+                <button key={style} type="button" aria-pressed={settings.uiStyle === style}
+                  onClick={() => update({ uiStyle: style })}
+                  className={`relative p-4 rounded-2xl text-left cursor-pointer ${ring} ${settings.uiStyle === style ? 'bg-white/10 ring-2 ring-white' : 'bg-white/[0.03] hover:bg-white/[0.07]'}`}>
+                  {settings.uiStyle === style && <span className="absolute top-3 right-3 w-6 h-6 rounded-full bg-white text-black flex items-center justify-center"><Check /></span>}
+                  <span aria-hidden="true" className={`block mb-3 text-2xl ${style === 'frank' ? 'font-mono text-[#d4af37]' : 'text-white'}`}>♠ ♥ ♣ ♦</span>
+                  <span className="block text-[17px]">{style === 'offsuit' ? 'Offsuit' : 'Frank'}</span>
+                  <span className="block mt-1 text-[12px] text-white/55">{style === 'offsuit' ? t.profile.offsuitDescription : t.profile.frankDescription}</span>
+                </button>
+              ))}
+            </div>
+            <p className="mt-3 text-[12px] text-white/55">
+              {lang === 'zh' ? '选择自动保存；牌桌风格在进入游戏后显示。' : 'Saved automatically. Table style appears when you enter a game.'}
+            </p>
+          </section>
           <AIConnectionSettings required={requireConnection} />
           <section>
             <h3 className="text-[14px] text-white/45 mb-2">{t.profile.avatar}</h3>

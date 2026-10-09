@@ -1,0 +1,37 @@
+- main [ref=f5e3]:
+  - generic [ref=f5e5]:
+    - generic [aria-hidden]:
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: K
+                      - generic: ♠
+                    - generic: ♠
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: A
+                      - generic: ♥
+                    - generic: ♥
+    - generic [ref=f5e6]:
+      - group "Language selection" [ref=f5e8]:
+        - button "EN" [ref=f5e9] [cursor=pointer]
+        - button "中文" [pressed] [ref=f5e10] [cursor=pointer]
+      - heading "Frankie Poker" [level=1] [ref=f5e12]:
+        - img "Frankie" [ref=f5e13]
+        - generic [aria-hidden] [ref=f5e15]: Poker
+      - generic [ref=f5e16]:
+        - generic [ref=f5e17]:
+          - button "游戏设置与 API 密钥" [ref=f5e18] [cursor=pointer]
+          - textbox "你的名字" [active] [ref=f5e23]: Layout
+        - button "开始" [ref=f5e24] [cursor=pointer]

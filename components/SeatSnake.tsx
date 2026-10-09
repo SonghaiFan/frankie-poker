@@ -29,6 +29,8 @@ interface SeatSnakeProps {
   onUnfold: () => void;
   unfoldLabel: string;
   markTitle: string;
+  onRemove?: (id: string) => void;
+  removeLabel?: (name: string) => string;
   rowProps: (id: string) => React.ButtonHTMLAttributes<HTMLButtonElement>;
 }
 
@@ -57,6 +59,8 @@ export const SeatSnake: React.FC<SeatSnakeProps> = ({
   unfoldLabel,
   markTitle,
   rowProps,
+  onRemove,
+  removeLabel,
 }) => {
   const n = rows.length;
   // Row j is stacked at k = n-1-j: the last row leads from the left end of the stack
@@ -135,8 +139,8 @@ export const SeatSnake: React.FC<SeatSnakeProps> = ({
       {rows.map((row, j) => {
         const here = arrived(j);
         return (
+          <React.Fragment key={row.id}>
           <button
-            key={row.id}
             type="button"
             {...rowProps(row.id)}
             tabIndex={here ? 0 : -1}
@@ -148,7 +152,7 @@ export const SeatSnake: React.FC<SeatSnakeProps> = ({
               ${here ? "opacity-100" : "opacity-0 pointer-events-none"}
               hover:bg-white/[0.06] focus-visible:bg-white/[0.06] focus-visible:outline focus-visible:outline-1 focus-visible:outline-white/30 active:bg-white/[0.08] active:scale-[0.98]
             `}
-            style={{ top: stop(j), height: ROW_H }}
+            style={{ top: stop(j), height: ROW_H, right: onRemove ? 44 : 0 }}
           >
             <span className="w-12 h-12 shrink-0" />
             <span className="flex-1 min-w-0">
@@ -167,6 +171,14 @@ export const SeatSnake: React.FC<SeatSnakeProps> = ({
               </span>
             )}
           </button>
+          {onRemove && <button type="button"
+            onClick={() => onRemove(row.id)}
+            aria-label={removeLabel?.(row.title) ?? `Remove ${row.title}`}
+            title={removeLabel?.(row.title) ?? `Remove ${row.title}`}
+            tabIndex={here ? 0 : -1} aria-hidden={!here}
+            className={`absolute right-3 z-20 w-8 h-8 rounded-full text-white/50 hover:text-white hover:bg-white/10 cursor-pointer focus-visible:outline focus-visible:outline-white ${here ? "" : "invisible"}`}
+            style={{ top: stop(j) + (ROW_H - 32) / 2 }}>×</button>}
+          </React.Fragment>
         );
       })}
 
