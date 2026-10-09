@@ -4,10 +4,11 @@ import { AI_MODELS, modelCostPerM } from "../constants";
 import { AIModelOption, GamePhase, PlayerStats } from "../types";
 import { useLanguage } from "../services/i18n";
 import { Avatar } from "./Avatar";
-import { NATURAL, SeatSettings } from "../services/seats";
+import { NATURAL, SeatSettings, promptForModel, withPromptForModel } from "../services/seats";
+import { DEFAULT_CHAT_PROMPT_TEMPLATE, modelKindFor } from "../services/aiProviders";
 import { ACTION_INSTRUCTIONS } from "../services/pokerSituation";
-import { isKnownField, referencesIn } from "../services/promptFields";
-import { PREVIEW_STREETS, PreviewStreet, hasSampleSituation, sampleSituation, valueAt } from "../services/promptPreview";
+import { isKnownField, referencesIn, PROMPT_FIELDS, fieldLabel } from "../services/promptFields";
+import { PREVIEW_STREETS, PreviewStreet, sampleSituation, valueAt, formatValue } from "../services/promptPreview";
 import { PromptVariables } from "./PromptVariables";
 import { PromptEditor, PromptEditorHandle, VarState } from "./PromptEditor";
 import { PromptPreview } from "./PromptPreview";
@@ -29,7 +30,7 @@ interface OpponentSheetProps {
 const START_POINT: StylePoint = { x: 0.3, y: 0.7 }; // where the dot lands when you first give a seat a style
 // Every model, cheapest first; the ones this venue doesn't serve are shown but can't be picked
 const ALL_MODELS = [...AI_MODELS].sort((a, b) => modelCostPerM(a) - modelCostPerM(b));
-const PROMPT_LIMIT = 2000;
+const PROMPT_LIMIT = 12000;
 
 const Chevron = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -53,7 +54,7 @@ const useWide = () => {
 // One opponent's settings with a shared edit/preview workspace. Every change applies as
 // it is made; Done only closes.
 export const OpponentSheet: React.FC<OpponentSheetProps> = ({ seat, menu, model, onChange, onClose, record = {} }) => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
 
   // --- Style: a point on the map, a named corner of it, or none at all ---
   const natural = seat.strategy === NATURAL;
@@ -90,12 +91,19 @@ export const OpponentSheet: React.FC<OpponentSheetProps> = ({ seat, menu, model,
   const currentModel = AI_MODELS.find((m) => m.id === model);
   // The box holds its own draft, so clearing it to start over doesn't snap the default back in.
   // What is saved: "" (the default) unless the text says something else.
-  const [promptText, setPromptText] = useState(seat.prompt.trim() ? seat.prompt : ACTION_INSTRUCTIONS);
-  const edited = seat.prompt.trim() !== "";
+  const defaultPrompt = modelKindFor(model) === "decisions" ? ACTION_INSTRUCTIONS : DEFAULT_CHAT_PROMPT_TEMPLATE;
+  const promptLabel = modelKindFor(model) === "decisions" ? t.seat.decisionsInstructions : t.seat.prompt;
+  const savedPrompt = promptForModel(seat, model);
+  const [promptText, setPromptText] = useState(savedPrompt.trim() ? savedPrompt : defaultPrompt);
+  const edited = savedPrompt.trim() !== "";
+  useEffect(() => {
+    const next = promptForModel(seat, model);
+    setPromptText(next.trim() ? next : modelKindFor(model) === "decisions" ? ACTION_INSTRUCTIONS : DEFAULT_CHAT_PROMPT_TEMPLATE);
+  }, [model]);
   const editPrompt = (text: string) => {
     setPromptText(text);
     const trimmed = text.trim();
-    onChange({ ...seat, prompt: trimmed === "" || trimmed === ACTION_INSTRUCTIONS ? "" : text });
+    onChange(withPromptForModel(seat, model, trimmed === "" || trimmed === defaultPrompt ? "" : text));
   };
 
   // A field from the list goes in where the caret is, as a pill — or at the
@@ -107,20 +115,6 @@ export const OpponentSheet: React.FC<OpponentSheetProps> = ({ seat, menu, model,
   // The same sample hand for every street, played through the real builders
   const wide = useWide();
   const [street, setStreet] = useState<PreviewStreet>(GamePhase.FLOP);
-  // The other streets are simulated after the panel has opened, one at a time
-  const [, warmed] = useState(0);
-  useEffect(() => {
-    let timer: ReturnType<typeof setTimeout>;
-    const next = () => {
-      const todo = PREVIEW_STREETS.find((s) => !hasSampleSituation(seat.id, s));
-      if (!todo) return;
-      sampleSituation(seat.id, todo);
-      warmed((n) => n + 1);
-      timer = setTimeout(next, 40);
-    };
-    timer = setTimeout(next, 400);
-    return () => clearTimeout(timer);
-  }, [seat.id]);
   const [picked, setPicked] = useState<string | null>(null);
   const [promptMode, setPromptMode] = useState<"edit" | "preview">("edit");
   const spot = sampleSituation(seat.id, street).state as Record<string, unknown>;
@@ -226,31 +220,48 @@ export const OpponentSheet: React.FC<OpponentSheetProps> = ({ seat, menu, model,
 
   const variables = <PromptVariables used={refs.used} onInsert={insertField} valueOf={valueOf} />;
 
+  const streetPicker = (
+    <div className="flex rounded-full bg-black/35 p-1 mb-4">
+      {PREVIEW_STREETS.map(s => <button key={s} type="button" aria-pressed={street === s}
+        onClick={() => setStreet(s)} className={`flex-1 h-9 rounded-full text-[13px] cursor-pointer ${street === s ? "bg-white text-black" : "text-white/60"}`}>
+        {t.desk.phases[s]}
+      </button>)}
+    </div>
+  );
   const preview = (
-    <PromptPreview
-      name={seat.id}
-      street={street}
-      onStreet={setStreet}
-      modelId={model}
-      prompt={seat.prompt}
-      draft={promptText}
-      selected={picked}
-      onSelect={setPicked}
-      chartPreflop={!natural}
-    />
+    <div>
+      {streetPicker}
+      <PromptPreview name={seat.id} street={street} modelId={model} prompt={promptText} chartPreflop={!natural}>
+        <PromptEditor value={promptText} onChange={editPrompt} limit={PROMPT_LIMIT}
+          label={promptLabel} stateOf={stateOf} valueOf={valueOf} showValues
+          selected={picked} onSelect={setPicked} edited={edited} />
+      </PromptPreview>
+    </div>
+  );
+  const field = PROMPT_FIELDS.find(f => f.path === picked || f.children?.includes(picked ?? ""));
+  const inspection = picked && (
+    <div className="mt-3 rounded-xl bg-white/5 p-4 text-[13px]">
+      <div className="flex justify-between gap-3">
+        <strong>{fieldLabel(picked, lang)}</strong>
+        <button type="button" onClick={() => setPicked(null)} aria-label={t.seat.done}>×</button>
+      </div>
+      {field && <p className="mt-2 text-white/55">{field.desc[lang]}</p>}
+      {streetPicker}
+      <pre className="whitespace-pre-wrap break-words text-[#f5e35b]">{formatValue(valueOf(picked))}</pre>
+    </div>
   );
 
   const promptSection = (
     <section>
       <div className="flex flex-wrap items-center justify-between gap-3 mb-2 min-h-7">
         <h3 className="text-[14px] text-white/45 flex items-center gap-2">
-          {t.seat.prompt}
+          {promptLabel}
           <span className={`h-5 px-2 rounded-full text-[12px] leading-5 ${edited ? "bg-[#f5e35b] text-black" : "bg-white/[0.08] text-white/55"}`}>
             {edited ? t.seat.editedTag : t.seat.defaultTag}
           </span>
         </h3>
         <div className="flex items-center gap-1.5">
-          <div className="flex rounded-full bg-black/35 p-1" role="group" aria-label={t.seat.prompt}>
+          <div className="flex rounded-full bg-black/35 p-1" role="group" aria-label={promptLabel}>
             {(["edit", "preview"] as const).map((mode) => (
               <button
                 key={mode}
@@ -266,7 +277,7 @@ export const OpponentSheet: React.FC<OpponentSheetProps> = ({ seat, menu, model,
           {edited && (
             <button
               type="button"
-              onClick={() => editPrompt(ACTION_INSTRUCTIONS)}
+              onClick={() => editPrompt(defaultPrompt)}
               className="h-7 px-3 rounded-full bg-white/[0.08] text-[13px] text-white hover:bg-white/[0.14] transition-colors cursor-pointer"
             >
               {t.seat.restoreDefault}
@@ -275,9 +286,10 @@ export const OpponentSheet: React.FC<OpponentSheetProps> = ({ seat, menu, model,
         </div>
       </div>
       <div hidden={promptMode !== "edit"}>
-      {wide && <p className="-mt-1 mb-3 text-[13px] leading-snug text-white/40">{t.seat.promptNote}</p>}
+      {wide && <p className="-mt-1 mb-3 text-[13px] leading-snug text-white/40">{modelKindFor(model) === "chat" ? t.seat.promptNote : t.seat.typeBacktick}</p>}
       <PromptEditor
         ref={editor}
+        label={promptLabel}
         value={promptText}
         onChange={editPrompt}
         limit={PROMPT_LIMIT}
@@ -290,7 +302,7 @@ export const OpponentSheet: React.FC<OpponentSheetProps> = ({ seat, menu, model,
         className={wide ? "min-h-[280px]" : "min-h-[220px]"}
       />
       <div className="mt-1.5 flex justify-between gap-3 text-[13px] text-white/35">
-        <span>{wide ? t.seat.typeBacktick : t.seat.promptNote}</span>
+        <span>{t.seat.typeBacktick}</span>
         <span className="tabular-nums shrink-0">{promptText.length}/{PROMPT_LIMIT}</span>
       </div>
       {refs.unknown.length > 0 && (
@@ -301,6 +313,7 @@ export const OpponentSheet: React.FC<OpponentSheetProps> = ({ seat, menu, model,
           ))}
         </p>
       )}
+      {inspection}
       <div className="mt-5">{variables}</div>
       </div>
       {promptMode === "preview" && (
