@@ -24,7 +24,7 @@ export const AIStratum: React.FC<AIStratumProps> = ({
     winningHand,
     aiIntent,
 }) => {
-    const { t } = useLanguage();
+    const { t, lang } = useLanguage();
     const [statsFor, setStatsFor] = useState<string | null>(null);
     // 1. Filter out eliminated players (Hide them)
     const visiblePlayers = useMemo(
@@ -92,7 +92,7 @@ export const AIStratum: React.FC<AIStratumProps> = ({
     return (
         <>
         {statsFor && players.find(p => p.id === statsFor) && <SeatStatsSheet player={players.find(p => p.id === statsFor)!} onClose={() => setStatsFor(null)} />}
-        <section className="relative w-full border-b border-white/5 rounded-b-3xl bg-black/10 backdrop-blur-lg h-[24svh] min-h-[244px] shrink-0 z-20 shadow-sm transition-all duration-500 overflow-hidden mx-auto max-w-[1920px]">
+        <section className="relative w-full border-b border-white/5 rounded-b-3xl bg-black/10 backdrop-blur-lg h-[24svh] min-h-[220px] shrink-0 z-20 shadow-sm transition-all duration-500 overflow-hidden mx-auto max-w-[1920px]">
             <div className="w-full h-full overflow-x-auto no-scrollbar flex">
                 {/* Enforcing mobile spacing and padding everywhere */}
                 <div className="flex h-full items-center gap-2 px-6 py-3 m-auto min-w-max">
@@ -151,7 +151,7 @@ export const AIStratum: React.FC<AIStratumProps> = ({
                             else if (isWinner) statusClass = "text-[#d4af37]";
                         }
 
-                        const actionLabel = ({WAITING: t.game.actions.waiting, CHECKED: t.game.actions.checked, CALLED: t.game.actions.called, RAISED: t.game.actions.raised, FOLDED: t.game.actions.folded, 'ALL-IN': t.game.actions.allIn, 'Thinking...': t.game.thinking} as Record<string, string>)[statusText] ?? statusText;
+                        const actionLabel = winningHand ? (isWinner ? (lang === "zh" ? "获胜" : "Winner") : (lang === "zh" ? "已结束" : "Finished")) : ({WAITING: t.game.actions.waiting, CHECKED: t.game.actions.checked, CALLED: t.game.actions.called, RAISED: t.game.actions.raised, FOLDED: t.game.actions.folded, 'ALL-IN': t.game.actions.allIn, 'Thinking...': t.game.thinking} as Record<string, string>)[statusText] ?? statusText;
 
                         return (
                             <div

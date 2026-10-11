@@ -763,6 +763,7 @@ export const PokerGame: React.FC<PokerGameProps> = ({ config, wealth, onWealthCh
             {/* Table Stratum: Zooms/Fades in with Delay */}
             <div className="frank-board-region w-full grow flex flex-col justify-center animate-zoom-fade-in z-10" style={{ animationDelay: '0.3s' }}>
                 <FrankTableStratum
+                    winnerName={gameState.players.find(p => p.id === gameState.winningHand?.playerId)?.name}
                     pot={gameState.pot}
                     board={gameState.board}
                     phase={gameState.phase}

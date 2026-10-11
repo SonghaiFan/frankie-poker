@@ -5,6 +5,7 @@ import { PlayingCard } from "./PlayingCard";
 import { ChipStack } from "../ChipStack";
 
 interface TableStratumProps {
+  winnerName?: string;
   pot: number;
   board: Card[];
   phase: GamePhase;
@@ -13,11 +14,12 @@ interface TableStratumProps {
 
 export const TableStratum: React.FC<TableStratumProps> = ({
   pot,
+  winnerName,
   board,
   phase,
   winningHand,
 }) => {
-  const { t, translateHand } = useLanguage();
+  const { t, lang, translateHand } = useLanguage();
   const visibleCardsCount =
     phase === GamePhase.PRE_FLOP
       ? 0
@@ -77,13 +79,14 @@ export const TableStratum: React.FC<TableStratumProps> = ({
   return (
     <section data-frank-table className="relative w-full h-[42svh] flex flex-col items-center justify-center bg-transparent z-10 py-2 md:py-6 shrink-0">
       {/* Background Pot Chips */}
-      <div className="absolute inset-0 z-0 overflow-hidden opacity-60 pointer-events-none">
+      <div className="frank-pot-chips absolute inset-x-0 bottom-0 h-10 z-0 overflow-hidden opacity-40 pointer-events-none">
         <div className="absolute inset-x-0 bottom-0 top-0 mx-auto max-w-5xl">
           <ChipStack amount={pot} />
         </div>
       </div>
 
       {/* Pot Value Display */}
+      {!winningHand && <>
       <div className="frank-pot-display absolute top-[10%] flex flex-col items-center mb-2 md:mb-6 transform transition-transform duration-500 z-10">
         <span className="font-sans text-[0.6rem] md:text-[1rem] tracking-[0.2em] text-[#888] uppercase mb-1">
           {t.game.totalPot}
@@ -93,6 +96,7 @@ export const TableStratum: React.FC<TableStratumProps> = ({
         </span>
       </div>
 
+      </>}
       {/* Unified Card Container */}
       <div className="frank-community-row flex items-center justify-center z-10 h-[16em] w-full max-w-7xl px-4 mt-8">
         {renderLayout()}
@@ -102,7 +106,7 @@ export const TableStratum: React.FC<TableStratumProps> = ({
       {winningHand && (
         <div className="frank-winning-hand absolute bottom-4 md:bottom-10 left-0 right-0 text-center z-10">
           <span className="text-[#d4af37] font-medium text-lg uppercase tracking-widest animate-in fade-in zoom-in duration-300 drop-shadow-lg bg-black/40 px-4 py-1 rounded-full backdrop-blur-md border border-[#d4af37]/20">
-            {translateHand(winningHand.description)}
+            {winnerName} {lang === "zh" ? "获胜" : "wins"} · {translateHand(winningHand.description)}
           </span>
         </div>
       )}

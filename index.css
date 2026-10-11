@@ -239,3 +239,33 @@
     justify-content: safe center;
   }
 }
+
+/* Frank mobile: reserve separate space for seats, board and actions. */
+.frank-workspace [data-frank-player] button:not(:disabled) { color: #f5f5f5; }
+.frank-workspace [data-frank-player] button.border-emerald-500\/30 { background: #073d30; color: #66edbd; }
+.frank-workspace [data-frank-player] button.border-\[\#d4af37\]\/30 { background: #30280e; color: #eed46e; }
+.frank-workspace [data-frank-player] button.border-white\/10 { background: #252a27; border-color: #ffffff35; }
+@media (max-width: 1023px) {
+  .frank-workspace[data-layout="compact"] { overflow-y: auto; }
+  .frank-workspace[data-layout="compact"] .frank-table-center {
+    display: grid;
+    grid-template-rows: 220px minmax(170px, 1fr) minmax(250px, 34svh);
+    min-height: 100%;
+    height: auto;
+  }
+  .frank-workspace[data-layout="compact"] .frank-opponents-region > section { height: 220px; min-height: 220px; }
+  .frank-workspace[data-layout="compact"] [data-frank-table] {
+    height: 100%; min-height: 170px; padding: 12px 16px;
+    gap: 12px; justify-content: center;
+  }
+  .frank-workspace[data-layout="compact"] .frank-pot-chips { display: none; }
+  .frank-workspace[data-layout="compact"] .frank-pot-display {
+    position: relative; top: auto; margin: 0; flex-shrink: 0;
+  }
+  .frank-workspace[data-layout="compact"] .frank-community-row { height: auto; margin: 0; padding: 0; flex-shrink: 0; }
+  .frank-workspace[data-layout="compact"] .frank-winning-hand { position: relative; bottom: auto; }
+  .frank-workspace[data-layout="compact"] .frank-winning-hand > span {
+    display: block; font-size: 13px; letter-spacing: 0; padding: 6px 12px;
+  }
+  .frank-workspace[data-layout="compact"] [data-frank-player] { height: 100%; min-height: 250px; }
+}

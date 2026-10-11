@@ -2,7 +2,6 @@
 import React from "react";
 import { GamePhase } from "../../types";
 import { PlayingCard } from "./PlayingCard";
-import { ChipStack } from "../ChipStack";
 import { ActionButton } from "../ActionButton";
 import { Slider } from "./Slider";
 import { Avatar } from "../Avatar";
@@ -197,7 +196,6 @@ export function PlayerStratum({player, onAction, canAct, toCall, gameStatus, onN
         `}
     >
       <div className="absolute inset-0 z-0 pointer-events-auto">
-        <ChipStack amount={player.chips} />
         <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none" />
       </div>
 
