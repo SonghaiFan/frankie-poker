@@ -6,7 +6,7 @@ An open-source No-Limit Texas Hold'em playground for people who want to play aga
 
 [中文上手指南](docs/quickstart.zh-CN.md) · [Agent setup & strategy guide](docs/agent-guide.md) · [Contributing](CONTRIBUTING.md) · [MIT license](LICENSE)
 
-> This project is evolving quickly and will remain free and open source forever. If you’ve downloaded it or are using it, please **Star** the repository and [**Follow @SonghaiFan**](https://github.com/SonghaiFan) to keep up with my projects. Your Star is my biggest source of support and motivation to keep building.
+> This project will remain free and open source forever. If you’ve downloaded it or are using it, please **Star** the repository or [**Follow @SonghaiFan**](https://github.com/SonghaiFan) to keep up with my projects. Your Star is my biggest source of support and motivation to keep building.
 
 ![Choose a venue and configure your opponents](docs/images/lobby.png)
 
