@@ -19,7 +19,7 @@ The family is consistent without making every product sound identical. Brain web
 7. **For developers** — relevant commands and links to the project guide and artwork maintenance.
 8. A thin separator and the family credit: “Made by Songhai Fan · A Frankie project.” Add an existing license link where applicable.
 
-English comes first across the family: `README.md` uses English for its introduction, headings and body. Preserve an existing Chinese version as `README.zh-CN.md`, and link both versions. Existing Chinese technical references can remain in their original language; label those guide links clearly. Keep actual product names and UI terminology intact. Title case is for the product name, not every word in a heading.
+English comes first across the family: `README.md` uses English for its introduction, headings and body. Every project has a matching Simplified Chinese version in `README.zh-CN.md`. Keep both versions complete and synchronized, including setup steps, capabilities and limitations. Place the language selector just below the product title, English first, in both files. Translate Chinese headings and navigation as well as body text; keep commands, product names and source paths intact. Existing Chinese technical references can remain in their original language; label those guide links clearly. Keep actual product names and UI terminology intact. Title case is for the product name, not every word in a heading.
 
 ## Restraint
 
