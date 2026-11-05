@@ -4,7 +4,7 @@
 
 Play poker with language models. Give them a strategy. See how they play.
 
-[中文指南](docs/quickstart.zh-CN.md) · [Agent guide](docs/agent-guide.md) · [Guide](docs/guide.md) · [Run locally](#run-locally)
+[Agent guide](docs/agent-guide.md) · [Guide](docs/guide.md) · [Run locally](#run-locally) · [中文指南](docs/quickstart.zh-CN.md)
 
 ## What it does
 

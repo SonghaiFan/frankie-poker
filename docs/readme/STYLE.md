@@ -4,7 +4,7 @@ The README is the front door to a Frankie project. It should feel like the banne
 
 ## Voice
 
-Describe what someone can actually do. Use concrete verbs and ordinary words. Prefer “Find a chord and see its voicings” to praise such as “a beautiful, powerful, premium experience.” Keep the product's own name, language, facts and limitations. Do not invent capabilities, availability, licenses or live links.
+Describe what someone can actually do. Use concrete verbs and ordinary words. Prefer “Find a chord and see its voicings” to praise such as “a beautiful, powerful, premium experience.” Keep the product's own name, terminology, facts and limitations. Do not invent capabilities, availability, licenses or live links.
 
 The family is consistent without making every product sound identical. Brain web and iOS share one product identity; their platform labels distinguish them. Established names such as Aurora, Blue Dictionary and Frank's Life List keep their identity.
 
@@ -19,7 +19,7 @@ The family is consistent without making every product sound identical. Brain web
 7. **For developers** — relevant commands and links to the project guide and artwork maintenance.
 8. A thin separator and the family credit: “Made by Songhai Fan · A Frankie project.” Add an existing license link where applicable.
 
-Use those English section headings across the family. Body text keeps the project's existing primary language; translated READMEs remain separate. Title case is for the product name, not every word in a heading.
+English comes first across the family: `README.md` uses English for its introduction, headings and body. Preserve an existing Chinese version as `README.zh-CN.md`, and link both versions. Existing Chinese technical references can remain in their original language; label those guide links clearly. Keep actual product names and UI terminology intact. Title case is for the product name, not every word in a heading.
 
 ## Restraint
 
