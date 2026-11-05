@@ -1,0 +1,31 @@
+{
+  "title": "Poker",
+  "tagline": "Play. Prompt. See how they decide.",
+  "category": "Play / AI poker",
+  "layout": "screenshot",
+  "assets": [
+    {
+      "src": "assets/ui.png",
+      "fit": "contain",
+      "crop": [
+        325,
+        44,
+        1059,
+        797
+      ],
+      "source_size": [
+        1708,
+        1245
+      ]
+    }
+  ],
+  "signature": "assets/frankie.svg",
+  "provenance": [
+    {
+      "file": "assets/ui.png",
+      "kind": "current local app screenshot",
+      "note": "Current lobby with the synthetic Guest name and rule-based Local Practice selected; no paid model calls.",
+      "captured_on": "2026-11-05"
+    }
+  ]
+}

@@ -1,3 +1,5 @@
+![Frankie Poker — current product banner](docs/readme/banner.png)
+
 # Frankie Poker
 
 **Play poker with language models. Give them a strategy. See how they play.**
@@ -8,20 +10,10 @@ An open-source No-Limit Texas Hold'em playground for people who want to play aga
 
 > This project will remain free and open source forever. If you’ve downloaded it or are using it, please **Star** the repository or [**Follow @SonghaiFan**](https://github.com/SonghaiFan) to keep up with my projects. Your Star is my biggest source of support and motivation to keep building.
 
-![Choose a venue and configure your opponents](docs/images/lobby.png)
 
-<details>
-<summary>Watch a hand on desktop and mobile</summary>
 
-Real gameplay against JEV, from player actions through showdown. The mobile recording uses a 390 × 844 browser viewport.
 
-![Desktop gameplay](docs/images/gameplay-desktop.gif)
-
-<img src="docs/images/gameplay-mobile.gif" alt="Mobile gameplay" width="390" />
-
-</details>
-
-## What you can do
+## Features
 
 - Play against JEV, Gemini, Claude, GPT, Grok, DeepSeek, and Kimi through OpenRouter. Available models depend on the venue; provider availability can change.
 - Give each opponent its own model, play style, and prompt.
@@ -32,7 +24,7 @@ Real gameplay against JEV, from player actions through showdown. The mobile reco
 
 Chips are virtual. Model calls use your OpenRouter balance. This is an experimental playground, not a solved GTO engine or a controlled model benchmark.
 
-## Start locally
+## Getting started
 
 Use **Node.js 22 or newer** and npm, plus an [OpenRouter API key](https://openrouter.ai/settings/keys) with access to the models you want to use.
 
@@ -53,7 +45,9 @@ Open the local URL printed by Vite (normally `http://localhost:3000`). Restart V
 
 The local dev server can use `.env.local`; keep that server private. Production builds always exclude the environment key.
 
-## Play online / bring your own key
+## Project notes
+
+### Play online / bring your own key
 
 Open **Game settings → AI connection**, enter your own OpenRouter key, and choose **Save connection**. It stays in this browser's local storage across refreshes until you choose **Clear key**. Requests go directly to the provider; Frankie Poker does not store keys on its server. Use a trusted device and a key with a spending limit. Saving does not make a paid API call; playing does.
 
@@ -61,7 +55,7 @@ OpenRouter supports the existing JEV and chat-model choices. **OpenAI-compatible
 
 For Vercel, deploy this Vite project with `npm run build` and output directory `dist`. Do not add a shared model key to Vercel. `.vercelignore` excludes local environment files and tournament output.
 
-## Your first table
+### Your first table
 
 Choose **Local Practice** to test without an API key: start with 1,000 free practice chips against simple rule-based opponents. Every decision runs on your device, including all four streets. Practice does not change your saved bankroll or opponent statistics. It ignores model prompts and provider settings; it is for testing the interface and game flow, not measuring poker strength.
 
@@ -74,13 +68,10 @@ Choose **Local Practice** to test without an API key: start with 1,000 free prac
 <details>
 <summary>Avatar and background settings</summary>
 
-![Choose your avatar and background](docs/images/settings.png)
 
 </details>
 
-## Give an opponent a strategy
-
-![Edit an opponent's instructions and inspect sample values](docs/images/strategy.png)
+### Give an opponent a strategy
 
 Click an opponent in the lobby. Choose a model, then edit its prompt. **JEV uses action instructions; chat models use a full system-prompt template.** Keep the chat template's response-format contract intact when changing its strategy guidance.
 
@@ -95,13 +86,12 @@ Try the [cautious value strategy](docs/strategies/cautious-value.md), or ask you
 
 Turn off **Let the model decide** to adjust the style map or choose a preset. The same controls work on desktop and mobile.
 
-![Desktop opponent settings](docs/images/player-settings-desktop.jpg)
 
-<img src="docs/images/player-settings-mobile.jpg" alt="Mobile opponent settings" width="390" />
+
 
 </details>
 
-## Hand this project to your AI agent
+### Hand this project to your AI agent
 
 Paste this into your coding agent after opening the repository:
 
@@ -109,7 +99,7 @@ Paste this into your coding agent after opening the repository:
 
 Your agent can help with setup, strategy drafts, variable plugins, and code changes. The [agent guide](docs/agent-guide.md) provides a concrete workflow and acceptance checks.
 
-## Extend the poker information
+### Extend the poker information
 
 For arithmetic, add a file-authored formula in [`plugins/variables.json`](plugins/variables.json). For card analysis or other algorithms, define a plugin and explicitly register it in [`plugins/registry.ts`](plugins/registry.ts). Field metadata automatically supplies searchable variables and readable prompt pills.
 
@@ -123,15 +113,23 @@ npm run build
 
 `npm run tournament` runs the scripted model-vs-model harness and can incur API charges. Inspect `scripts/tournament.ts` for its configured models and hand count before running it. Results go to ignored `.tournament/` files.
 
-## Credits
+### Credits
 
 A big shout-out to **[Offsuit](https://offsuit.app/)**: its modern, minimal poker UI/UX inspired this project's visual direction and interaction design. Frankie Poker is an independent project and is not affiliated with or endorsed by Offsuit.
 
 AI brand icons come from [LobeHub Icons](https://github.com/lobehub/lobe-icons). The JEV/Typesafe mark was supplied from [Seeklogo](https://seeklogo.com/); brand marks remain the property of their owners. Avatar fallbacks use [Microsoft Fluent Emoji](https://github.com/microsoft/fluentui-emoji). Venue illustrations were generated for this project with a Fluent 3D-inspired material direction. See [third-party notices](THIRD_PARTY_NOTICES.md).
 
-## Browser data compatibility
+### Browser data compatibility
 
 Existing saves keep their historical `franks-holdem:` storage keys so renaming the app does not reset bankrolls, opponents, or language preferences.
+
+## Development
+
+```sh
+npm run build
+```
+
+Banner sources and update instructions: [README artwork](docs/readme/README.md).
 
 ## License
 

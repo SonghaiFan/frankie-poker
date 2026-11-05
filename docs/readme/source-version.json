@@ -1,0 +1,14 @@
+{
+  "repository": "frankie-poker",
+  "source_commit": "efef7e4055c3a4d7da287a2fed5fbfb5cee8f8ae",
+  "captured_on": "2026-11-05",
+  "source_state": "Current local working tree; existing uncommitted app edits were included where present.",
+  "materials": [
+    {
+      "file": "assets/ui.png",
+      "kind": "current local app screenshot",
+      "note": "Current lobby with the synthetic Guest name and rule-based Local Practice selected; no paid model calls.",
+      "captured_on": "2026-11-05"
+    }
+  ]
+}
