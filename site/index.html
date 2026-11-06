@@ -11,11 +11,9 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://songhaifan.github.io/frankie-poker/" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta property="og:image" content="https://songhaifan.github.io/frankie-poker/images/lobby.png" />
+  <meta property="og:image" content="https://songhaifan.github.io/frankie-poker/images/banner.png" />
+  <link rel="canonical" href="https://songhaifan.github.io/frankie-poker/" />
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -37,7 +35,8 @@
     </nav>
   </header>
 
-  <main>
+  <a class="skip" href="#main">Skip to content / 跳至内容</a>
+  <main id="main">
     <!-- Hero -->
     <section class="hero">
       <h1>
@@ -62,17 +61,32 @@
       </p>
 
       <figure class="shot hero-shot">
-        <img src="images/gameplay-desktop.gif" width="960" height="675" alt="A hand of Frankie Poker played on desktop, from first action through showdown" />
+        <img src="images/practice-current.png" width="1468" height="1247" alt="Current key-free Local Practice table with a sample player, five rule-based opponents and the hand log" fetchpriority="high" />
       </figure>
     </section>
 
+    <section class="section" id="use">
+      <div class="section-head"><h2><span lang="en">Your first free hand</span><span lang="zh">第一手免费练习</span></h2><p><span lang="en">A name identifies local saved settings. It is not an online account or a shared multiplayer room.</span><span lang="zh">名字用于区分本地设置，不是线上账号，也不是多人联机房间。</span></p></div>
+      <ol class="first-hand">
+        <li><h3><span lang="en">Enter a name</span><span lang="zh">输入名字</span></h3><p><span lang="en">Choose Local Practice. The table can have one to nine opponents; here every opponent uses the local rules.</span><span lang="zh">选择本地练习，可配置一到九名对手；这里所有对手都使用本地规则。</span></p></li>
+        <li><h3><span lang="en">Deal and act</span><span lang="zh">发牌并行动</span></h3><p><span lang="en">Press Practice locally, then I'm ready. Use the available Call/Check, Raise and sizing controls. Swipe your hole cards upward to fold.</span><span lang="zh">点击本地练习，再点 I'm ready。使用当前可选的跟注／过牌、加注与金额控件；向上滑动底牌弃牌。</span></p></li>
+        <li><h3><span lang="en">Read the hand log</span><span lang="zh">回看本手记录</span></h3><p><span lang="en">Follow positions, bets and the practice bot's short rule explanation. Leave the table to return to the lobby; practice does not spend your bankroll.</span><span lang="zh">查看位置、下注与规则对手的简短说明。退出回到大厅，练习不消耗资金。</span></p></li>
+      </ol>
+    </section>
+    <section class="section" id="streets">
+      <div class="section-head"><h2><span lang="en">Two private cards. A shared board.</span><span lang="zh">两张底牌，共享牌面。</span></h2><p><span lang="en">In Hold'em, the best five-card hand can use either, both or neither of your two hole cards. The board appears across the flop, turn and river; a betting round separates each reveal.</span><span lang="zh">德州扑克用最佳五张牌比较，可以使用两张、一张或零张底牌。公共牌依次经过翻牌、转牌与河牌，每次揭示之间有一轮下注。</span></p></div>
+      <div class="street-example">
+        <div><div class="street-buttons" role="group" aria-label="Sample street"><button type="button" data-street="0" aria-pressed="true"><span lang="en">Preflop</span><span lang="zh">翻前</span></button><button type="button" data-street="3" aria-pressed="false"><span lang="en">Flop</span><span lang="zh">翻牌</span></button><button type="button" data-street="4" aria-pressed="false"><span lang="en">Turn</span><span lang="zh">转牌</span></button><button type="button" data-street="5" aria-pressed="false"><span lang="en">River</span><span lang="zh">河牌</span></button></div><p><span lang="en">Your hole cards</span><span lang="zh">你的底牌</span></p><div id="sample-hole" class="sample-cards"></div><p><span lang="en">Public board</span><span lang="zh">已揭示公共牌</span></p><div id="sample-board" class="sample-cards" aria-live="polite"></div><noscript><p>Enable JavaScript for the card example. / 牌面示例需要 JavaScript。</p></noscript></div>
+        <div class="street-copy"><p><span lang="en">This unsaved explainer reads the same sample cards as the app's request-preview source. It reveals only the selected street, not another player's cards, and does not evaluate or send a decision.</span><span lang="zh">这个不保存数据的说明组件从应用请求预览源码读取同一组示例牌，只揭示所选街的牌面，不读取对手底牌，也不计算或发送决策。</span></p><p><span lang="en">Win the pot when everyone else folds, or compare hands at showdown. No-limit raises are bounded by the chips a player has; the app offers the currently legal actions.</span><span lang="zh">其他人都弃牌时即可赢得底池，否则在摊牌时比较牌力。无限注的上限仍是玩家现有筹码；应用会提供当前合法操作。</span></p><a href="https://www.pokerstars.com/poker/learn/lesson/texas-holdem-rules/"><span lang="en">Rules reference: PokerStars Learn</span><span lang="zh">规则参考：PokerStars Learn</span></a></div>
+      </div>
+    </section>
     <!-- Venues -->
     <section class="section">
       <div class="section-head">
         <h2><span lang="en">Six rooms, one bankroll</span><span lang="zh">六个牌室，一份资金</span></h2>
         <p>
-          <span lang="en">Warm up in Local Practice against rule-based opponents — no API key needed. Then take 500 chips to Footscray; win, and the higher-stakes rooms unlock.</span>
-          <span lang="zh">先在本地练习里和规则对手热身——无需 API key。再带着 500 筹码去 Footscray，赢下来，更高级别的牌室就会解锁。</span>
+          <span lang="en">Local Practice gives you 1,000 practice chips at 5/10 blinds. It leaves your separate bankroll and opponent records unchanged. Model venues start with a 500-chip bankroll; a room opens when you can cover its buy-in.</span>
+          <span lang="zh">本地练习提供 1,000 练习筹码、5/10 盲注，不改变独立的资金与对手记录。模型牌室初始资金为 500 筹码；余额足够支付买入时，相应牌室即可进入。</span>
         </p>
       </div>
       <ul class="venues">
@@ -128,18 +142,18 @@
       </div>
 
       <div class="feature">
-        <figure class="shot"><img src="images/strategy.png" width="1280" height="720" alt="The prompt editor with searchable poker variables and a street-by-street preview" loading="lazy" /></figure>
+        <figure class="shot"><img src="images/preview-current.png" width="1468" height="1247" alt="The prompt editor with searchable poker variables and a street-by-street preview" loading="lazy" /></figure>
         <div class="feature-text">
           <h3><span lang="en">Edit the prompt. Preview every street.</span><span lang="zh">编辑提示词，逐街预览。</span></h3>
           <p>
-            <span lang="en">Each opponent gets its own model, play style and prompt. Search for equity, position or pot odds and insert them as live values. Preview builds the exact request for preflop, flop, turn and river locally — no model call, no cost.</span>
-            <span lang="zh">每个对手都有自己的模型、风格和提示词。搜索胜率、位置、底池赔率等信息并插入为实时变量。预览会在本地为翻前、翻牌、转牌、河牌生成完整请求——不调用模型，不产生费用。</span>
+            <span lang="en">Each seat has its own model, style and saved instructions. Search for registered information such as position or pot odds, then preview the request on four sample streets locally. Edits save immediately; Done only closes the editor. Preview does not ask a model to act.</span>
+            <span lang="zh">每个座位都有自己的模型、风格与保存的指令。搜索位置、底池赔率等已注册信息，在四条示例街上预览请求。编辑会立即保存，Done 只关闭面板；Preview 不会请求模型出牌。</span>
           </p>
         </div>
       </div>
 
       <div class="feature flip">
-        <figure class="shot"><img src="images/lobby.png" width="1280" height="720" alt="The lobby: bankroll, venue cards and the opponents at your table" loading="lazy" /></figure>
+        <figure class="shot"><img src="images/lobby-current.png" width="1468" height="1247" alt="The lobby: bankroll, venue cards and the opponents at your table" loading="lazy" /></figure>
         <div class="feature-text">
           <h3><span lang="en">Pick your table.</span><span lang="zh">挑选你的牌桌。</span></h3>
           <p>
@@ -171,20 +185,22 @@
         <li>
           <h3><span lang="en">Agent-friendly</span><span lang="zh">适合交给 AI agent</span></h3>
           <p>
-            <span lang="en">Hand the repo to your coding agent to set up, draft strategies, or add plugins — with checks it can run.</span>
+            <span lang="en">Hand the repo to your coding agent to set up, draft strategies, or add plugins ; with checks it can run.</span>
             <span lang="zh">把项目交给你的编程 agent：配置环境、撰写策略、增加插件，并附带可运行的检查。</span>
           </p>
         </li>
         <li>
           <h3><span lang="en">Honest about what it is</span><span lang="zh">实事求是</span></h3>
           <p>
-            <span lang="en">An experimental playground — not a solved GTO engine or a controlled model benchmark.</span>
-            <span lang="zh">这是一个实验场——不是 GTO 求解器，也不是严格的模型评测。</span>
+            <span lang="en">An experimental playground ; not a solved GTO engine or a controlled model benchmark.</span>
+            <span lang="zh">这是一个实验场;;不是 GTO 求解器，也不是严格的模型评测。</span>
           </p>
         </li>
       </ul>
     </section>
 
+    <section class="section" id="information"><div class="section-head"><h2><span lang="en">Understand what the model receives</span><span lang="zh">理解模型收到的信息</span></h2></div><div class="information-grid"><article><h3><span lang="en">Situation, not omniscience</span><span lang="zh">局面，而非全知视角</span></h3><p><span lang="en">Requests include the acting player's hole cards, revealed board, public stacks, position, betting history and registered derived information. Equity estimates and inferred ranges carry uncertainty. Missing observations remain unknown.</span><span lang="zh">请求包括行动玩家的底牌、已揭示公共牌、公开筹码、位置、下注记录与已注册的衍生信息。估算胜率和推断范围都有不确定性，缺失的观察并不等于零。</span></p></article><article><h3><span lang="en">Style is a decision policy</span><span lang="zh">风格是一种决策方式</span></h3><p><span lang="en">Let the model decide uses the model on every street. A chosen style can use preflop charts before handing later streets to the model. Chat-model action probabilities describe play frequencies, not winning chances; JEV uses a different decision contract.</span><span lang="zh">Let the model decide 会逐街使用模型；选定风格时，翻前可能先使用图表，后续再交给模型。聊天模型的行动概率表示打法频率，不是获胜概率；JEV 使用不同的决策协议。</span></p></article></div></section>
+    <section class="section recordings"><div class="section-head"><h2><span lang="en">Watch the table in motion</span><span lang="zh">看看牌桌如何运转</span></h2><p><span lang="en">Earlier real desktop and phone recordings are retained. The new stills above show the current inspected interface.</span><span lang="zh">保留此前真实录制的桌面与手机操作，上方新增静态图展示本次检查的当前界面。</span></p></div><details><summary><span lang="en">Play desktop recording</span><span lang="zh">播放桌面录制</span></summary><img src="images/gameplay-desktop.gif" width="960" height="675" loading="lazy" alt="Earlier actual desktop hand recording" /></details></section>
     <!-- Quickstart -->
     <section class="section" id="start">
       <div class="section-head">
@@ -202,8 +218,8 @@
         <li>
           <h3><span lang="en">Locally</span><span lang="zh">本地</span></h3>
           <p>
-            <span lang="en">Node.js 22+ and npm. Put your key in <code>.env.local</code> — only the local dev server reads it.</span>
-            <span lang="zh">需要 Node.js 22+ 和 npm。把 key 写进 <code>.env.local</code>——只有本地开发服务器会读取它。</span>
+            <span lang="en">Node.js 22+ and npm. Local Practice needs no key. For model venues, use the connection settings or privately configure <code>.env.local</code> for the local dev server.</span>
+            <span lang="zh">需要 Node.js 22+ 和 npm，本地练习无需 key。模型牌室可使用连接设置，或为本地开发服务器私下配置 <code>.env.local</code>。</span>
           </p>
         </li>
       </ol>
@@ -214,15 +230,16 @@
 <pre id="cmds"><code>git clone https://github.com/SonghaiFan/frankie-poker.git
 cd frankie-poker
 npm ci
-cp .env.example .env.local   # set OPENROUTER_API_KEY
 npm run dev</code></pre>
       </div>
       <p class="note">
         <span lang="en">Use a key with a spending limit. Chips are virtual; model calls use your own API balance.</span>
         <span lang="zh">建议使用设置了消费上限的 key。筹码是虚拟的，模型调用消耗你自己的 API 余额。</span>
       </p>
+      <p class="note"><span lang="en">Bankroll, seat instructions and preferences stay in browser storage per origin and player name. Hosted connection keys also remain there until Clear key. Changing browsers does not sync this state; clearing site data removes it.</span><span lang="zh">资金、座位指令与偏好保存在当前来源和玩家名字对应的浏览器存储中。线上填写的连接 key 也会保留，直到 Clear key。更换浏览器不会同步，清理站点数据会移除它们。</span></p>
       <div class="links">
         <a href="https://github.com/SonghaiFan/frankie-poker#readme">README</a>
+        <a href="https://github.com/SonghaiFan/frankie-poker/blob/main/site/GUIDE.md"><span lang="en">Asset update guide</span><span lang="zh">素材更新指南</span></a>
         <a href="https://github.com/SonghaiFan/frankie-poker/blob/main/docs/quickstart.zh-CN.md">中文上手指南</a>
         <a href="https://github.com/SonghaiFan/frankie-poker/blob/main/docs/agent-guide.md"><span lang="en">Agent guide</span><span lang="zh">Agent 指南</span></a>
         <a href="https://github.com/SonghaiFan/frankie-poker/blob/main/CONTRIBUTING.md"><span lang="en">Contributing</span><span lang="zh">参与贡献</span></a>
@@ -238,6 +255,7 @@ npm run dev</code></pre>
     <p><a href="https://github.com/SonghaiFan/frankie-poker/blob/main/LICENSE">MIT License</a> · <a href="https://github.com/SonghaiFan/frankie-poker/blob/main/THIRD_PARTY_NOTICES.md"><span lang="en">Third-party notices</span><span lang="zh">第三方声明</span></a></p>
   </footer>
 
+  <script src="hand.js" defer></script>
   <script>
     (function () {
       var root = document.documentElement;
@@ -250,7 +268,7 @@ npm run dev</code></pre>
       }
       var saved = null;
       try { saved = localStorage.getItem('frankie-site-lang'); } catch (e) {}
-      setLang(saved || (/^zh/i.test(navigator.language || '') ? 'zh' : 'en'));
+      setLang(saved || 'en');
       buttons.forEach(function (b) { b.addEventListener('click', function () { setLang(b.dataset.setLang); }); });
 
       document.querySelectorAll('[data-copy-target]').forEach(function (btn) {

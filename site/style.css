@@ -4,8 +4,8 @@
   --surface: rgba(255, 255, 255, 0.06);
   --line: rgba(255, 255, 255, 0.1);
   --text: #ffffff;
-  --muted: rgba(255, 255, 255, 0.6);
-  --faint: rgba(255, 255, 255, 0.4);
+  --muted: rgba(255, 255, 255, 0.74);
+  --faint: rgba(255, 255, 255, 0.62);
   --radius: 28px;
   --gutter: clamp(16px, 4vw, 40px);
   color-scheme: dark;
@@ -18,7 +18,7 @@ html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
   min-height: 100vh;
-  font-family: Inter, "Noto Sans SC", system-ui, -apple-system, sans-serif;
+  font-family: system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
   font-weight: 300;
   line-height: 1.55;
   color: var(--text);
@@ -326,3 +326,9 @@ main { max-width: 1120px; margin: 0 auto; padding: 0 var(--gutter); }
   html { scroll-behavior: auto; }
   .venue img, .btn { transition: none; }
 }
+
+/* Explanations share the actual app's felt, rounded action controls and quiet rails. */
+.skip{position:absolute;top:-80px;left:16px;background:#fff;color:#13251d;padding:10px;z-index:20}.skip:focus{top:10px}a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid #cfdbc9;outline-offset:4px}.hero{padding-top:clamp(36px,6vw,70px)}.first-hand{list-style:none;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:30px 44px}.first-hand li:last-child{grid-column:1/-1;max-width:650px}.first-hand h3,.information-grid h3{font-size:23px}.first-hand p,.information-grid p,.street-copy p{margin-top:12px;color:var(--muted)}.street-example{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;padding:28px;border:1px solid var(--line);border-radius:28px;background:#0002}.street-buttons{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:26px}.street-buttons button{font:inherit;font-size:13px;border:1px solid var(--line);border-radius:999px;padding:8px 12px;background:#0003;color:var(--text);cursor:pointer}.street-buttons button[aria-pressed="true"]{background:#e8ece8;color:#13251d}.sample-cards{display:flex;flex-wrap:wrap;gap:9px;min-height:94px;margin:10px 0 22px;align-items:center}.sample-card{display:inline-flex;align-items:center;justify-content:center;flex-direction:column;gap:2px;background:#f4f5f2;color:#242226;border-radius:12px;width:57px;height:80px;font-size:24px}.sample-card[data-red="true"]{color:#a62d38}.street-example>div>p{font-size:13px;color:var(--muted)}.street-copy a{display:inline-block;margin-top:20px}.information-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px}.recordings details{border:1px solid var(--line);border-radius:20px;padding:18px}.recordings summary{cursor:pointer}.recordings img{margin:20px auto 0;max-width:960px;border-radius:16px}
+@media(max-width:700px){.street-example,.information-grid,.first-hand{grid-template-columns:1fr}.first-hand li:last-child{grid-column:auto}.street-example{padding:20px;gap:20px}.sample-card{width:44px;height:66px;font-size:21px}.sample-cards{gap:6px}.top .brand .signature{width:76px}.top .pill{padding:7px 11px}}
+
+.section[id]{scroll-margin-top:100px}@media(max-width:520px){.section[id]{scroll-margin-top:155px}}

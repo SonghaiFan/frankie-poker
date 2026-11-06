@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - "site/**"
+      - "services/promptPreview.ts"
+      - "docs/readme/banner.png"
       - "docs/images/**"
       - "assets/venues/**"
       - "assets/frank-signature.svg"
@@ -29,6 +31,9 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
       - name: Assemble site
         run: ./scripts/build-site.sh
       - uses: actions/configure-pages@v5
