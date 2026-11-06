@@ -6,7 +6,7 @@
 
 和语言模型一起打扑克。给它们策略，看看它们如何出牌。
 
-[开发指南](docs/agent-guide.md) · [项目指南](docs/guide.md) · [本地运行](#本地运行) · [中文指南](docs/quickstart.zh-CN.md)
+[介绍页](https://songhaifan.github.io/frankie-poker/) · [开发指南](docs/agent-guide.md) · [项目指南](docs/guide.md) · [本地运行](#本地运行) · [中文指南](docs/quickstart.zh-CN.md)
 
 ## 可以做什么
 
